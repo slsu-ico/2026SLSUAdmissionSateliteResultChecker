@@ -6,6 +6,99 @@ var SATELLITE_FILE = path.join(process.cwd(), 'api', 'satellite_qualifiers.secur
 var FIRST_RELEASE_FILE = path.join(process.cwd(), 'api', 'data.secure.json');
 var DPWAS_FILE = path.join(process.cwd(), 'api', 'dpwas.secure.json');
 
+var PROTOTYPE_RECORDS = {
+  '202690001': {
+    found: true,
+    type: 'satellite_qualifier',
+    satellite: 'SLSU Lucena Campus',
+    course: 'Bachelor of Science in Information Technology',
+    date: 'May 8, 2026'
+  },
+  '202690002': {
+    found: true,
+    type: 'satellite_qualifier',
+    satellite: 'SLSU Tiaong Campus',
+    course: 'Bachelor of Science in Business Administration',
+    date: 'May 8, 2026'
+  },
+  '202690003': {
+    found: true,
+    type: 'satellite_qualifier',
+    satellite: 'SLSU Gumaca Campus',
+    course: 'Bachelor of Elementary Education',
+    date: 'May 9, 2026'
+  },
+  '202690004': {
+    found: true,
+    type: 'satellite_qualifier',
+    satellite: 'SLSU Catanauan Campus',
+    course: 'Bachelor of Science in Hospitality Management',
+    date: 'May 9, 2026'
+  },
+  '202690005': {
+    found: true,
+    type: 'satellite_qualifier',
+    satellite: 'SLSU Polillo Campus',
+    course: 'Bachelor of Science in Agriculture',
+    date: 'May 10, 2026'
+  },
+  '202690006': {
+    found: true,
+    type: 'main_first_choice',
+    program: 'BACHELOR OF SCIENCE IN NURSING'
+  },
+  '202690007': {
+    found: true,
+    type: 'main_first_choice',
+    program: 'BACHELOR OF SCIENCE IN MIDWIFERY'
+  },
+  '202690008': {
+    found: true,
+    type: 'main_first_choice',
+    program: 'BACHELOR OF SCIENCE IN PSYCHOLOGY'
+  },
+  '202690009': {
+    found: true,
+    type: 'main_first_choice',
+    program: 'BACHELOR OF SCIENCE IN CIVIL ENGINEERING'
+  },
+  '202690010': {
+    found: true,
+    type: 'main_first_choice',
+    program: 'BACHELOR OF SECONDARY EDUCATION'
+  },
+  '202690011': {
+    found: true,
+    type: 'main_dpwas',
+    date: 'April 29, 2026',
+    time: '10AM-11AM'
+  },
+  '202690012': {
+    found: true,
+    type: 'main_dpwas',
+    date: 'April 29, 2026',
+    time: '11AM-12NN'
+  },
+  '202690013': {
+    found: true,
+    type: 'main_dpwas',
+    date: 'April 30, 2026',
+    time: '8AM-9AM'
+  },
+  '202690014': {
+    found: true,
+    type: 'main_dpwas',
+    date: 'April 30, 2026',
+    time: '9AM-10AM'
+  },
+  '202690015': {
+    found: true,
+    type: 'main_dpwas',
+    date: 'April 30, 2026',
+    time: '10AM-11AM'
+  }
+};
+
 function getEnv(name) {
   var value = process.env[name];
   return value ? String(value).trim() : '';
@@ -80,6 +173,10 @@ function findEncryptedRecord(filePath, appHash, secretName) {
   }
 }
 
+function getPrototypeRecord(normalized) {
+  return PROTOTYPE_RECORDS[normalized] || null;
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
@@ -91,8 +188,12 @@ module.exports = async function handler(req, res) {
     var normalized = normalizeAppNo(query);
 
     if (!normalized) {
-      loadSecureData(SATELLITE_FILE);
-      return res.status(200).json({ ready: true, protected: true });
+      try {
+        loadSecureData(SATELLITE_FILE);
+        return res.status(200).json({ ready: true, protected: true });
+      } catch (error) {
+        return res.status(200).json({ ready: true, protected: false, prototype: true });
+      }
     }
 
     var appHash = crypto.createHash('sha256').update(normalized, 'utf8').digest('hex');
@@ -107,6 +208,11 @@ module.exports = async function handler(req, res) {
         course: qualifierInfo.course,
         date: qualifierInfo.date
       });
+    }
+
+    var prototypeRecord = getPrototypeRecord(normalized);
+    if (prototypeRecord) {
+      return res.status(200).json(prototypeRecord);
     }
 
     var mainSecretName = getEnv('MAIN_DATA_ENCRYPTION_KEY') ? 'MAIN_DATA_ENCRYPTION_KEY' : 'DATA_ENCRYPTION_KEY';
