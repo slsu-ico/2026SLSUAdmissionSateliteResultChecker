@@ -136,11 +136,11 @@ async function checkResult() {
           '<div class="res-header">' +
             '<div class="res-icon icon-warning">&#8505;</div>' +
             '<div class="res-header-text">' +
-              '<div class="res-tag res-tag-warning">NOT ON THE SATELLITE CAMPUS QUALIFIER LIST</div>' +
+              '<div class="res-tag res-tag-warning">NO CURRENT RECORD FOUND</div>' +
             '</div>' +
           '</div>' +
           '<div class="res-divider-warning"></div>' +
-          '<p class="advisory-text">Thank you for your interest in SLSU. The Application Number you entered is not included in the current satellite campus qualifier data loaded in this checker.<br><br>Please stay tuned for further announcements through the official Facebook pages of <a href="https://www.facebook.com/slsuMain" target="_blank" rel="noopener noreferrer" class="fb-link">SLSU Main</a> or the <a href="https://www.facebook.com/SLSUAdmission" target="_blank" rel="noopener noreferrer" class="fb-link">SLSU Student Admission Office</a>.</p>' +
+          '<p class="advisory-text">Thank you for checking. Your Application Number is not found in the qualifier data currently uploaded to this checker.<br><br>This does not automatically mean that you are not qualified. Some SLSU Satellite Campuses may release their qualifier lists on different dates, and this checker will only show records from campuses whose data has already been provided and uploaded.<br><br>Please wait for further announcements from your target satellite campus and the <a href="https://www.facebook.com/SLSUAdmission" target="_blank" rel="noopener noreferrer" class="fb-link">SLSU Student Admission Office</a>.</p>' +
         '</div>';
     }
   } catch (err) {
@@ -161,3 +161,4 @@ function switchTab(btn, tab) {
 }
 
 loadAllData();
+
