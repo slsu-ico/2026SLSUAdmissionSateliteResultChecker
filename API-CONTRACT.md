@@ -2,7 +2,14 @@
 
 ## `GET /api/search-result`
 
-Secure lookup endpoint for SLSU Satellite Campus qualifiers.
+Secure lookup endpoint for SLSU Satellite Campus qualifiers, with fallback checks for SLSU Main Campus first-choice and DPWAS lists.
+
+Lookup priority:
+
+1. Satellite Campus qualifier list
+2. Main Campus DPWAS list
+3. Main Campus first-choice qualifier list
+4. No current record found
 
 ### Readiness check
 
@@ -21,28 +28,40 @@ Response:
 }
 ```
 
-### Qualifier match
-
-Request:
-
-```http
-GET /api/search-result?q=2026-00001
-```
-
-Response:
+### Satellite Campus qualifier match
 
 ```json
 {
   "found": true,
+  "type": "satellite_qualifier",
   "satellite": "SLSU Tiaong Campus",
   "course": "Bachelor of Science in Information Technology",
   "date": "May 8, 2026"
 }
 ```
 
-### No match
+### Main Campus DPWAS match
 
-Response:
+```json
+{
+  "found": true,
+  "type": "main_dpwas",
+  "date": "April 29, 2026",
+  "time": "10AM-11AM"
+}
+```
+
+### Main Campus first-choice match
+
+```json
+{
+  "found": true,
+  "type": "main_first_choice",
+  "program": "Bachelor of Science in Nursing"
+}
+```
+
+### No match
 
 ```json
 {
@@ -50,18 +69,13 @@ Response:
 }
 ```
 
-## Secure data
+## Secure Data Files
 
-The endpoint reads `api/satellite_qualifiers.secure.json`, generated from `satellite_qualifiers.csv` by:
+The endpoint reads these encrypted files from `api/`:
 
-```powershell
-.\scripts\generate-satellite-secure-data.ps1 -SourceCsv satellite_qualifiers.csv
-```
+- `satellite_qualifiers.secure.json` for satellite campus qualifier records
+- `dpwas.secure.json` for Main Campus DPWAS records
+- `data.secure.json` for Main Campus first-choice qualifier records
 
-Required CSV columns:
+Satellite data uses `DATA_ENCRYPTION_KEY`. Main Campus fallback files use `MAIN_DATA_ENCRYPTION_KEY` when set; otherwise they use `DATA_ENCRYPTION_KEY`.
 
-```csv
-Application number,Satelite,course,date
-```
-
-`Satelite` and `Satellite` are both accepted as the campus column name.

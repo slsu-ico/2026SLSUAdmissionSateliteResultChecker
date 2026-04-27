@@ -3,6 +3,8 @@ var path = require('path');
 var crypto = require('crypto');
 
 var SATELLITE_FILE = path.join(process.cwd(), 'api', 'satellite_qualifiers.secure.json');
+var FIRST_RELEASE_FILE = path.join(process.cwd(), 'api', 'data.secure.json');
+var DPWAS_FILE = path.join(process.cwd(), 'api', 'dpwas.secure.json');
 
 function getEnv(name) {
   var value = process.env[name];
@@ -42,10 +44,11 @@ function decryptRecord(payload, keys) {
   return plaintext;
 }
 
-function loadSecureData(filePath) {
-  var secret = getEnv('DATA_ENCRYPTION_KEY');
+function loadSecureData(filePath, secretName) {
+  var selectedSecretName = secretName || 'DATA_ENCRYPTION_KEY';
+  var secret = getEnv(selectedSecretName);
   if (!secret) {
-    throw new Error('Missing DATA_ENCRYPTION_KEY environment variable.');
+    throw new Error('Missing ' + selectedSecretName + ' environment variable.');
   }
 
   if (!fs.existsSync(filePath)) {
@@ -64,6 +67,19 @@ function loadSecureData(filePath) {
   };
 }
 
+function findEncryptedRecord(filePath, appHash, secretName) {
+  try {
+    var secureData = loadSecureData(filePath, secretName);
+    var encryptedRecord = secureData.records[appHash];
+    if (!encryptedRecord) {
+      return null;
+    }
+    return decryptRecord(encryptedRecord, secureData.keys);
+  } catch (e) {
+    return null;
+  }
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
@@ -79,24 +95,47 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ ready: true, protected: true });
     }
 
-    var satelliteData = loadSecureData(SATELLITE_FILE);
     var appHash = crypto.createHash('sha256').update(normalized, 'utf8').digest('hex');
-    var encryptedRecord = satelliteData.records[appHash];
+    var satelliteRecord = findEncryptedRecord(SATELLITE_FILE, appHash);
 
-    if (!encryptedRecord) {
-      return res.status(200).json({ found: false });
+    if (satelliteRecord) {
+      var qualifierInfo = JSON.parse(satelliteRecord);
+      return res.status(200).json({
+        found: true,
+        type: 'satellite_qualifier',
+        satellite: qualifierInfo.satellite,
+        course: qualifierInfo.course,
+        date: qualifierInfo.date
+      });
     }
 
-    var qualifierInfo = JSON.parse(decryptRecord(encryptedRecord, satelliteData.keys));
-    return res.status(200).json({
-      found: true,
-      satellite: qualifierInfo.satellite,
-      course: qualifierInfo.course,
-      date: qualifierInfo.date
-    });
+    var mainSecretName = getEnv('MAIN_DATA_ENCRYPTION_KEY') ? 'MAIN_DATA_ENCRYPTION_KEY' : 'DATA_ENCRYPTION_KEY';
+    var dpwasRecord = findEncryptedRecord(DPWAS_FILE, appHash, mainSecretName);
+    if (dpwasRecord) {
+      var dpwasInfo = JSON.parse(dpwasRecord);
+      return res.status(200).json({
+        found: true,
+        type: 'main_dpwas',
+        date: dpwasInfo.date,
+        time: dpwasInfo.time
+      });
+    }
+
+    var firstReleaseRecord = findEncryptedRecord(FIRST_RELEASE_FILE, appHash, mainSecretName);
+    if (firstReleaseRecord) {
+      return res.status(200).json({
+        found: true,
+        type: 'main_first_choice',
+        program: firstReleaseRecord
+      });
+    }
+
+    return res.status(200).json({ found: false });
   } catch (error) {
     return res.status(500).json({
       error: error && error.message ? error.message : 'Unexpected server error'
     });
   }
 };
+
+

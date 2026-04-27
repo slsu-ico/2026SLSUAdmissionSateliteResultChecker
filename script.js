@@ -108,28 +108,62 @@ async function checkResult() {
     }
 
     if (payload.found) {
-      var displaySatellite = String(payload.satellite || '').trim() || 'To be announced';
-      var displayCourse = String(payload.course || '').trim() || 'To be announced';
-      var displayDate = formatDateString(payload.date) || 'To be announced';
-      resultEl.innerHTML =
-        '<div class="result-box result-success">' +
-          '<div class="res-header">' +
-            '<div class="res-icon icon-success">&#127881;</div>' +
-            '<div class="res-header-text">' +
-              '<h3>Satellite Campus Qualifier</h3>' +
+      if (payload.type === 'satellite_qualifier') {
+        var displaySatellite = String(payload.satellite || '').trim() || 'To be announced';
+        var displayCourse = String(payload.course || '').trim() || 'To be announced';
+        var displayDate = formatDateString(payload.date) || 'To be announced';
+        resultEl.innerHTML =
+          '<div class="result-box result-success">' +
+            '<div class="res-header">' +
+              '<div class="res-icon icon-success">&#127881;</div>' +
+              '<div class="res-header-text">' +
+                '<h3>Satellite Campus Qualifier</h3>' +
+              '</div>' +
             '</div>' +
-          '</div>' +
-          '<div class="res-divider"></div>' +
-          '<div class="res-row"><div class="res-label">App. No.</div><div class="res-val">' + escapeHtml(displayKey) + '</div></div>' +
-          '<div class="res-row"><div class="res-label res-label-info">Satellite Campus</div><div class="res-val program program-info">' + escapeHtml(displaySatellite) + '</div></div>' +
-          '<div class="res-row"><div class="res-label res-label-info">Course</div><div class="res-val program program-info">' + escapeHtml(displayCourse) + '</div></div>' +
-          '<div class="res-row"><div class="res-label res-label-info">Date</div><div class="res-val program program-info">' + escapeHtml(displayDate) + '</div></div>' +
-          '<div class="congrats-note">' +
-            'Congratulations. You are included in the SLSU Satellite Campus qualifier list for A.Y. 2026-2027.<br><br>' +
-            'Please report to <strong>' + escapeHtml(displaySatellite) + '</strong> on <strong>' + escapeHtml(displayDate) + '</strong> for your first-choice course, <strong>' + escapeHtml(displayCourse) + '</strong>. Bring your required documents and follow the instructions of the assigned campus.' +
-          '</div>' +
-          '<p class="screenshot-note">Screenshot this as proof of your assigned campus and schedule.</p>' +
-        '</div>';
+            '<div class="res-divider"></div>' +
+            '<div class="res-row"><div class="res-label">App. No.</div><div class="res-val">' + escapeHtml(displayKey) + '</div></div>' +
+            '<div class="res-row"><div class="res-label res-label-info">Satellite Campus</div><div class="res-val program program-info">' + escapeHtml(displaySatellite) + '</div></div>' +
+            '<div class="res-row"><div class="res-label res-label-info">Course</div><div class="res-val program program-info">' + escapeHtml(displayCourse) + '</div></div>' +
+            '<div class="res-row"><div class="res-label res-label-info">Date</div><div class="res-val program program-info">' + escapeHtml(displayDate) + '</div></div>' +
+            '<div class="congrats-note">' +
+              'Congratulations. You are included in the SLSU Satellite Campus qualifier list for A.Y. 2026-2027.<br><br>' +
+              'Please report to <strong>' + escapeHtml(displaySatellite) + '</strong> on <strong>' + escapeHtml(displayDate) + '</strong> for your first-choice course, <strong>' + escapeHtml(displayCourse) + '</strong>. Bring your required documents and follow the instructions of the assigned campus.' +
+            '</div>' +
+            '<p class="screenshot-note">Screenshot this as proof of your assigned campus and schedule.</p>' +
+          '</div>';
+      } else if (payload.type === 'main_dpwas') {
+        var dpwasDate = formatDateString(payload.date) || 'To be announced';
+        var dpwasTime = String(payload.time || '').trim() || 'To be announced';
+        resultEl.innerHTML =
+          '<div class="result-box result-info">' +
+            '<div class="res-header">' +
+              '<div class="res-icon icon-info">&#10003;</div>' +
+              '<div class="res-header-text">' +
+                '<div class="res-tag res-tag-info">MAIN CAMPUS DPWAS LIST</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="res-divider"></div>' +
+            '<div class="res-row"><div class="res-label res-label-info">App. No.</div><div class="res-val">' + escapeHtml(displayKey) + '</div></div>' +
+            '<div class="res-row"><div class="res-label res-label-info">Date</div><div class="res-val program program-info">' + escapeHtml(dpwasDate) + '</div></div>' +
+            '<div class="res-row"><div class="res-label res-label-info">Time</div><div class="res-val program program-info">' + escapeHtml(dpwasTime) + '</div></div>' +
+            '<div class="congrats-note congrats-note-info">This Application Number is included in the SLSU Main Campus DPWAS list. Please follow the Main Campus DPWAS instructions and schedule.</div>' +
+          '</div>';
+      } else if (payload.type === 'main_first_choice') {
+        var displayProgram = String(payload.program || '').trim() || 'To be announced';
+        resultEl.innerHTML =
+          '<div class="result-box result-info">' +
+            '<div class="res-header">' +
+              '<div class="res-icon icon-info">&#10003;</div>' +
+              '<div class="res-header-text">' +
+                '<div class="res-tag res-tag-info">MAIN CAMPUS FIRST-CHOICE QUALIFIER</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="res-divider"></div>' +
+            '<div class="res-row"><div class="res-label res-label-info">App. No.</div><div class="res-val">' + escapeHtml(displayKey) + '</div></div>' +
+            '<div class="res-row"><div class="res-label res-label-info">1st Choice Program</div><div class="res-val program program-info">' + escapeHtml(displayProgram) + '</div></div>' +
+            '<div class="congrats-note congrats-note-info">This Application Number is included in the SLSU Main Campus first-choice qualifier list.</div>' +
+          '</div>';
+      }
     } else {
       resultEl.innerHTML =
         '<div class="result-box result-warning">' +
@@ -161,4 +195,5 @@ function switchTab(btn, tab) {
 }
 
 loadAllData();
+
 
