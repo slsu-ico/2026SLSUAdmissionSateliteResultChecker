@@ -146,7 +146,7 @@ async function checkResult() {
             '<div class="res-row"><div class="res-label res-label-info">App. No.</div><div class="res-val">' + escapeHtml(displayKey) + '</div></div>' +
             '<div class="res-row"><div class="res-label res-label-info">Date</div><div class="res-val program program-info">' + escapeHtml(dpwasDate) + '</div></div>' +
             '<div class="res-row"><div class="res-label res-label-info">Time</div><div class="res-val program program-info">' + escapeHtml(dpwasTime) + '</div></div>' +
-            '<div class="congrats-note congrats-note-info">This Application Number is included in the SLSU Main Campus DPWAS list. Please follow the Main Campus DPWAS instructions and schedule.</div>' +
+            '<div class="congrats-note congrats-note-info">This Application Number is included in the SLSU Main Campus DPWAS list. Please report on <strong>' + escapeHtml(dpwasDate) + '</strong> at <strong>' + escapeHtml(dpwasTime) + '</strong> and follow the Main Campus DPWAS instructions.</div>' +
           '</div>';
       } else if (payload.type === 'main_first_choice') {
         var displayProgram = String(payload.program || '').trim() || 'To be announced';
