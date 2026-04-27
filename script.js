@@ -235,7 +235,7 @@ async function checkResult() {
             '</div>' +
           '</div>' +
           '<div class="res-divider-warning"></div>' +
-          '<p class="advisory-text">Thank you for checking. Your Application Number is not found in the qualifier data currently uploaded to this checker.<br><br>This does not automatically mean that you are not qualified. Some SLSU Satellite Campuses may release their qualifier lists on different dates, and this checker will only show records from campuses whose data has already been provided and uploaded.<br><br>Please wait for further announcements from your target satellite campus and the <a href="https://www.facebook.com/SLSUAdmission" target="_blank" rel="noopener noreferrer" class="fb-link">SLSU Student Admission Office</a>.</p>' +
+          '<p class="advisory-text">Thank you for checking. Your Application Number is not found in the qualifier data currently uploaded to this checker.<br><br>This does not automatically mean that you are not qualified. Some SLSU Satellite Campuses may release their qualifier lists on different dates, and this checker will only show records from campuses whose data has already been provided and uploaded.<br><br>Please wait for further announcements from your target satellite campus, the <a href="https://www.facebook.com/slsuMain" target="_blank" rel="noopener noreferrer" class="fb-link">SLSU Main Campus</a>, and the <a href="https://www.facebook.com/SLSUAdmission" target="_blank" rel="noopener noreferrer" class="fb-link">SLSU Student Admission Office</a>.</p>' +
         '</div>';
     }
   } catch (err) {
