@@ -1,0 +1,10 @@
+﻿# Environment / deployment
+.env
+.vercel
+
+# Keep real applicant source data local. Generate the encrypted JSON before deployment.
+satellite_qualifiers.csv
+
+# OS/editor noise
+.DS_Store
+Thumbs.db

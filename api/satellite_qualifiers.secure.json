@@ -1,0 +1,14 @@
+﻿{
+    "version":  1,
+    "algorithm":  "aes-256-cbc+hmac-sha256",
+    "recordCount":  1,
+    "source":  "satellite_qualifiers.csv",
+    "generatedAt":  "2026-04-27T03:20:06.6494365Z",
+    "records":  {
+                    "56296a18856b1ee3f8d3907a06300fd0366ceb721b4ef97f3f3024fdfb624d50":  {
+                                                                                             "data":  "1yZDrdbCcqsY6Ct2fF9ltqBL/KDocOjOU2Xu168+x/agaLToXrHpQky+iRjOf1MULPIbZu8ZPPnHUb+m1B25PR3puFj8fdfPksHbyNtQhcuehXN0HFL5214IjlyEJYrC6S7DViHcTkvlMnYfI3yLKqtrQrxsJ2ke1SiY8wdnwCc=",
+                                                                                             "mac":  "pe0/fQB0bPP2sBppz8BZdYCa3VAehKuGXYHCwAxXeE0=",
+                                                                                             "iv":  "SLd2eJBL6OO4PKvjffMAlA=="
+                                                                                         }
+                }
+}

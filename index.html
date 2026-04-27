@@ -1,0 +1,163 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="api-base-url" content="">
+<title>SLSU Satellite Campus Qualifier Checker | A.Y. 2026-2027</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo-ring"><img src="SLSU Logo with outline.png" alt="SLSU Logo"></div>
+    <div class="header-copy">
+      <div class="header-text">
+        <h1>SLSU Satellite Campus<br>Qualifier Checker</h1>
+        <p>Southern Luzon State University &middot; Satellite Campuses</p>
+        <div class="header-year">A.Y. 2026-2027</div>
+      </div>
+      <div class="header-brand">
+        <div class="header-campaign" aria-label="#YES4SLSU campaign tag">#YES<span class="header-campaign-accent">4</span>SLSU</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="ticker-wrap">
+  <div class="ticker-inner">
+    <span>&#128226; Satellite Campus Qualifier Results for A.Y. 2026-2027 are now available!</span>
+    <span>&#128269; Applicants should check their assigned satellite campus, first-choice course, and reporting date.</span>
+    <span>&#128197; Report only on your assigned schedule at the satellite campus shown in the checker.</span>
+    <span>&#128203; Bring your examination permit and admission requirements for verification.</span>
+    <span>&#128248; Wear a plain white shirt and maong pants when reporting to the campus.</span>
+    <span>&#128226; Satellite Campus Qualifier Results for A.Y. 2026-2027 are now available!</span>
+    <span>&#128269; Applicants should check their assigned satellite campus, first-choice course, and reporting date.</span>
+    <span>&#128197; Report only on your assigned schedule at the satellite campus shown in the checker.</span>
+    <span>&#128203; Bring your examination permit and admission requirements for verification.</span>
+    <span>&#128248; Wear a plain white shirt and maong pants when reporting to the campus.</span>
+  </div>
+</div>
+
+<main>
+  <div class="checker-card">
+    <h2>Check Your Satellite Campus Qualification</h2>
+    <p class="subtitle">Enter your Application Number as indicated on your Examination Permit to view your assigned satellite campus, first-choice course, and reporting schedule.</p>
+
+    <div id="dataStatus"></div>
+
+    <div class="field-group">
+      <label>Application Number</label>
+      <div class="input-wrap">
+        <input type="text" id="appInput" placeholder="e.g. 2026-00001" maxlength="20"
+          oninput="this.value=this.value.toUpperCase()"
+          onkeydown="if(event.key==='Enter') checkResult()"
+          disabled>
+        <span class="input-icon">&#128269;</span>
+      </div>
+    </div>
+
+    <button class="check-btn" id="checkBtn" onclick="checkResult()" disabled>
+      <span class="btn-shine"></span>
+      Check My Status
+    </button>
+
+    <div id="result"></div>
+  </div>
+
+  <p class="section-title">Information &amp; Reminders</p>
+  <p class="section-sub">Important instructions for qualifiers reporting to SLSU Satellite Campuses.</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab(this,'reminders')">&#128204; Reminders</button>
+    <button class="tab-btn" onclick="switchTab(this,'schedule')">&#128197; Schedule</button>
+    <button class="tab-btn" onclick="switchTab(this,'requirements')">&#128203; Requirements</button>
+    <button class="tab-btn" onclick="switchTab(this,'faq')">&#10067; FAQs</button>
+  </div>
+
+  <div id="tab-reminders" class="tab-panel active">
+    <div class="info-card">
+      <h4><span>&#128204;</span> Important Reminders</h4>
+      <ol class="reminder-list">
+        <li>Only applicants included in the satellite campus qualifier list and scheduled for the date shown in the checker will be entertained.</li>
+        <li>Report to the satellite campus indicated in your result. Do not proceed to another campus unless officially advised.</li>
+        <li>Bring your Examination Permit, admission forms, and required supporting documents for verification.</li>
+        <li>College applicants are required to wear a plain white shirt and maong pants when reporting to the campus.</li>
+        <li>No reservation fees are collected to confirm an admission slot.</li>
+        <li>Non-appearance on the given schedule may result in forfeiture of the slot.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div id="tab-schedule" class="tab-panel">
+    <div class="info-card">
+      <h4><span>&#128197;</span> Reporting Schedule</h4>
+      <p class="read-note"><strong>Schedule Notice:</strong> Satellite campus schedules are individualized. Use the checker to view your assigned campus and date.</p>
+      <ul class="quick-points">
+        <li>Venue: The SLSU Satellite Campus shown in your result.</li>
+        <li>Please arrive early and follow the instructions of the campus admission personnel.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="tab-requirements" class="tab-panel">
+    <div class="info-card">
+      <h4><span>&#128203;</span> General Admission Requirements</h4>
+      <div class="req-section">
+        <p class="req-heading">Primary Documents</p>
+        <ul class="req-list">
+          <li>Examination Permit duly signed by the test administrator</li>
+          <li>Filled out admission forms</li>
+          <li>Original and photocopy of Grade 12 Report Card or applicable academic record</li>
+        </ul>
+      </div>
+      <div class="req-section">
+        <p class="req-heading">Supporting Documents</p>
+        <ul class="req-list">
+          <li>2x2 picture with nametag and white background</li>
+          <li>Original and photocopy of PSA Birth Certificate</li>
+          <li>Original and photocopy of Good Moral Character</li>
+          <li>Other documents required by the assigned satellite campus</li>
+        </ul>
+      </div>
+      <p class="req-link-card">Forms Link: <a href="https://tinyurl.com/SLSUAdmissionForms" target="_blank" rel="noopener noreferrer" class="fb-link">https://tinyurl.com/SLSUAdmissionForms</a></p>
+    </div>
+  </div>
+
+  <div id="tab-faq" class="tab-panel">
+    <div class="info-card">
+      <h4><span>&#10067;</span> Frequently Asked Questions</h4>
+      <div class="faq-item">
+        <p class="faq-q">What will the checker show?</p>
+        <p class="faq-a">It will show your assigned satellite campus, your first-choice course, and the date when you should report to that campus.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">What if my application number is not found?</p>
+        <p class="faq-a">It means the number is not included in the current satellite campus qualifier list loaded in this checker. Please wait for official announcements or contact the admission office.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">Can I report to a different satellite campus?</p>
+        <p class="faq-a">No. Applicants should report to the satellite campus indicated in their result unless officially instructed otherwise.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">Should I screenshot my result?</p>
+        <p class="faq-a">Yes. Keep a screenshot of your result as proof of your assigned campus and schedule.</p>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-mantra">Empowering people, ensuring a sustainable future</div>
+  <div class="footer-campus-line">Southern Luzon State University &middot; Lucban, Quezon, Philippines</div>
+  <span class="footer-contact-line">&#128241; <span class="footer-contact-label">SMART:</span> 09512179881 <span class="footer-contact-sep">|</span> <span class="footer-contact-label">GLOBE:</span> 09055224341</span><br>
+  &#9993;&#65039; <a href="mailto:admission@slsu.edu.ph">admission@slsu.edu.ph</a> &nbsp;|&nbsp;
+  &#127760; <a href="https://www.slsu.edu.ph" target="_blank">www.slsu.edu.ph</a>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
