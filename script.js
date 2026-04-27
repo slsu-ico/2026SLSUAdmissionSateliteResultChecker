@@ -81,6 +81,65 @@ function formatDateString(value) {
   return text;
 }
 
+function formatTimePart(value) {
+  var text = String(value || '').trim().toUpperCase().replace(/\s+/g, '');
+  var match = text.match(/^(\d{1,2})(?::?(\d{2}))?(AM|PM|NN|MN)$/);
+  if (!match) return String(value || '').trim();
+
+  var hour = Number(match[1]);
+  var minute = match[2] || '00';
+  var period = match[3];
+
+  if (period === 'NN') period = 'PM';
+  if (period === 'MN') period = 'AM';
+
+  return hour + ':' + minute + ' ' + period;
+}
+
+function formatTimeRange(value) {
+  var text = String(value || '').trim();
+  if (!text) return text;
+
+  var parts = text.split(/\s*[-–—]\s*/);
+  if (parts.length === 2) {
+    return formatTimePart(parts[0]) + ' - ' + formatTimePart(parts[1]);
+  }
+
+  return formatTimePart(text);
+}
+
+function getMainCampusCollege(program) {
+  var normalized = normalizeAppNo(program);
+  var exactMatches = {
+    BACHELOROFARTSINHISTORY: 'College of Arts and Sciences',
+    BACHELOROFARTSINPSYCHOLOGY: 'College of Arts and Sciences',
+    BACHELOROFSCIENCEINPSYCHOLOGY: 'College of Arts and Sciences',
+    BACHELOROFSCIENCEINBIOLOGY: 'College of Arts and Sciences',
+    BACHELOROFSCIENCEINENVIRONMENTALSCIENCE: 'College of Arts and Sciences',
+    BACHELOROFSCIENCEINMATHEMATICS: 'College of Arts and Sciences',
+    BACHELOROFPUBLICADMINISTRATION: 'College of Administration, Business, Hospitality and Accountancy',
+    BACHELOROFSCIENCEINACCOUNTANCY: 'College of Administration, Business, Hospitality and Accountancy',
+    BACHELOROFSCIENCEINHOSPITALITYMANAGEMENT: 'College of Administration, Business, Hospitality and Accountancy',
+    BACHELOROFSCIENCEINAGRICULTURE: 'College of Agriculture',
+    BACHELOROFSCIENCEINFORESTRY: 'College of Agriculture',
+    BACHELOROFSCIENCEINMIDWIFERY: 'College of Allied Medicine',
+    BACHELOROFSCIENCEINNURSING: 'College of Allied Medicine',
+    BACHELOROFSCIENCEINRADIOLOGICTECHNOLOGY: 'College of Allied Medicine',
+    BACHELOROFSECONDARYEDUCATION: 'College of Teacher Education',
+    BACHELOROFSECONDARYEDUCATIONMAJORINSCIENCES: 'College of Teacher Education',
+    BACHELOROFSECONDARYEDUCATIONMAJORINSOCIALSTUDIES: 'College of Teacher Education',
+    BACHELOROFTECHNOLOGYANDLIVELIHOODEDUCATIONMAJORINHOMEECONOMICS: 'College of Teacher Education',
+    BACHELOROFTECHNOLOGYANDLIVELIHOODEDUCATIONMAJORININFORMATIONANDCOMMUNICATIONTECHNOLOGY: 'College of Teacher Education'
+  };
+
+  if (exactMatches[normalized]) return exactMatches[normalized];
+  if (normalized.indexOf('BACHELOROFSCIENCEINBUSINESSADMINISTRATION') === 0) return 'College of Administration, Business, Hospitality and Accountancy';
+  if (normalized.indexOf('BACHELOROFSCIENCEIN') === 0 && normalized.indexOf('ENGINEERING') !== -1) return 'College of Engineering';
+  if (normalized.indexOf('BACHELOROFINDUSTRIALTECHNOLOGY') === 0) return 'College of Industrial Technology';
+
+  return 'Main Campus';
+}
+
 async function checkResult() {
   var raw = document.getElementById('appInput').value.trim();
   var resultEl = document.getElementById('result');
@@ -133,7 +192,7 @@ async function checkResult() {
           '</div>';
       } else if (payload.type === 'main_dpwas') {
         var dpwasDate = formatDateString(payload.date) || 'To be announced';
-        var dpwasTime = String(payload.time || '').trim() || 'To be announced';
+        var dpwasTime = formatTimeRange(payload.time) || 'To be announced';
         resultEl.innerHTML =
           '<div class="result-box result-info">' +
             '<div class="res-header">' +
@@ -150,6 +209,7 @@ async function checkResult() {
           '</div>';
       } else if (payload.type === 'main_first_choice') {
         var displayProgram = String(payload.program || '').trim() || 'To be announced';
+        var displayCollege = getMainCampusCollege(displayProgram);
         resultEl.innerHTML =
           '<div class="result-box result-info">' +
             '<div class="res-header">' +
@@ -160,8 +220,9 @@ async function checkResult() {
             '</div>' +
             '<div class="res-divider"></div>' +
             '<div class="res-row"><div class="res-label res-label-info">App. No.</div><div class="res-val">' + escapeHtml(displayKey) + '</div></div>' +
-            '<div class="res-row"><div class="res-label res-label-info">1st Choice Program</div><div class="res-val program program-info">' + escapeHtml(displayProgram) + '</div></div>' +
-            '<div class="congrats-note congrats-note-info">This Application Number is included in the SLSU Main Campus first-choice qualifier list.</div>' +
+            '<div class="res-row"><div class="res-label res-label-info">College</div><div class="res-val program program-info">' + escapeHtml(displayCollege) + '</div></div>' +
+            '<div class="res-row"><div class="res-label res-label-info">Course</div><div class="res-val program program-info">' + escapeHtml(displayProgram) + '</div></div>' +
+            '<div class="congrats-note congrats-note-info">This Application Number is included in the SLSU Main Campus first-choice qualifier list under <strong>' + escapeHtml(displayCollege) + '</strong> for <strong>' + escapeHtml(displayProgram) + '</strong>.</div>' +
           '</div>';
       }
     } else {
