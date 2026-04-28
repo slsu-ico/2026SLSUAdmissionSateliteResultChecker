@@ -525,6 +525,7 @@ function renderSatelliteDpwasNotice(displayKey, payload) {
 
 function renderDpwasFirstReleaseResult(displayKey, payload) {
   var displayProgram = String(payload.program || '').trim() || 'To be announced';
+  var displayCollege = getMainCampusCollege(displayProgram);
   return '<div class="result-box result-info">' +
     '<div class="res-header">' +
       '<div class="res-icon icon-info">&#10003;</div>' +
@@ -534,6 +535,7 @@ function renderDpwasFirstReleaseResult(displayKey, payload) {
     '</div>' +
     '<div class="res-divider"></div>' +
     '<div class="res-row"><div class="res-label res-label-info">App. No.</div><div class="res-val">' + escapeHtml(displayKey) + '</div></div>' +
+    '<div class="res-row"><div class="res-label res-label-info">College</div><div class="res-val program program-info">' + escapeHtml(displayCollege) + '</div></div>' +
     '<div class="res-row"><div class="res-label res-label-info">1st Choice Program</div><div class="res-val program program-info">' + escapeHtml(displayProgram) + '</div></div>' +
     '<div class="congrats-note congrats-note-info">You are included in the first admission results and have qualified for your first-choice program.</div>' +
   '</div>';
