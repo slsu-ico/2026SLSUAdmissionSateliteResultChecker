@@ -505,6 +505,24 @@ function renderDpwasResult(displayKey, payload) {
   '</div>';
 }
 
+function renderSatelliteDpwasNotice(displayKey, payload) {
+  var dpwasDate = formatDateString(payload.date) || 'To be announced';
+  var dpwasTime = formatTimeRange(payload.time) || 'To be announced';
+  return '<div class="result-box result-info">' +
+    '<div class="res-header">' +
+      '<div class="res-icon icon-info">&#10003;</div>' +
+      '<div class="res-header-text">' +
+        '<div class="res-tag res-tag-info">&#10003; DPWAS Eligible</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="res-divider"></div>' +
+    '<div class="res-row"><div class="res-label res-label-info">App. No.</div><div class="res-val">' + escapeHtml(displayKey) + '</div></div>' +
+    '<div class="res-row"><div class="res-label res-label-info">Date</div><div class="res-val program program-info">' + escapeHtml(dpwasDate) + '</div></div>' +
+    '<div class="res-row"><div class="res-label res-label-info">Time</div><div class="res-val program program-info">' + escapeHtml(dpwasTime) + '</div></div>' +
+    '<div class="congrats-note congrats-note-info">This Application Number is already included in the SLSU Main Campus DPWAS eligible list. Please follow the Main Campus DPWAS schedule and instructions shown above.</div>' +
+  '</div>';
+}
+
 function renderDpwasFirstReleaseResult(displayKey, payload) {
   var displayProgram = String(payload.program || '').trim() || 'To be announced';
   return '<div class="result-box result-info">' +
@@ -573,11 +591,13 @@ async function checkResult() {
             '</div>' +
             '<p class="screenshot-note">Screenshot this as proof of your assigned campus and schedule.</p>' +
           '</div>';
-      } else if (payload.type === 'main_dpwas' && (currentCheckerMode === 'dpwas' || currentCheckerMode === 'satellite')) {
+      } else if (payload.type === 'main_dpwas' && currentCheckerMode === 'dpwas') {
         resultEl.innerHTML = renderDpwasResult(displayKey, payload);
-      } else if (payload.type === 'main_first_choice' && (currentCheckerMode === 'main' || currentCheckerMode === 'satellite')) {
+      } else if (payload.type === 'main_dpwas' && currentCheckerMode === 'satellite') {
+        resultEl.innerHTML = renderSatelliteDpwasNotice(displayKey, payload);
+      } else if (payload.type === 'main_first_choice' && currentCheckerMode === 'main') {
         resultEl.innerHTML = renderMainQualifierResult(displayKey, payload);
-      } else if (payload.type === 'main_first_choice' && currentCheckerMode === 'dpwas') {
+      } else if (payload.type === 'main_first_choice' && (currentCheckerMode === 'dpwas' || currentCheckerMode === 'satellite')) {
         resultEl.innerHTML = renderDpwasFirstReleaseResult(displayKey, payload);
       } else {
         resultEl.innerHTML = renderNotFoundResult(currentCheckerMode);
