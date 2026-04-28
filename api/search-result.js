@@ -207,6 +207,8 @@ module.exports = async function handler(req, res) {
     var prototypeRecord = getPrototypeRecord(normalized);
     if (prototypeRecord && (
       (mode === 'satellite' && prototypeRecord.type === 'satellite_qualifier') ||
+      (mode === 'satellite' && prototypeRecord.type === 'main_dpwas') ||
+      (mode === 'satellite' && prototypeRecord.type === 'main_first_choice') ||
       (mode === 'dpwas' && prototypeRecord.type === 'main_dpwas') ||
       (mode === 'dpwas' && prototypeRecord.type === 'main_first_choice') ||
       (mode === 'main' && prototypeRecord.type === 'main_first_choice')
@@ -226,6 +228,26 @@ module.exports = async function handler(req, res) {
           satellite: qualifierInfo.satellite,
           course: qualifierInfo.course,
           date: qualifierInfo.date
+        });
+      }
+
+      var satelliteDpwasRecord = findEncryptedRecord(DPWAS_FILE, appHash, mainSecretName);
+      if (satelliteDpwasRecord) {
+        var satelliteDpwasInfo = JSON.parse(satelliteDpwasRecord);
+        return res.status(200).json({
+          found: true,
+          type: 'main_dpwas',
+          date: satelliteDpwasInfo.date,
+          time: satelliteDpwasInfo.time
+        });
+      }
+
+      var satelliteFirstReleaseRecord = findEncryptedRecord(FIRST_RELEASE_FILE, appHash, mainSecretName);
+      if (satelliteFirstReleaseRecord) {
+        return res.status(200).json({
+          found: true,
+          type: 'main_first_choice',
+          program: satelliteFirstReleaseRecord
         });
       }
 

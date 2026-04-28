@@ -223,7 +223,7 @@ var INFO_CONTENT = {
         '<li>Practice CLAYGO before leaving the confirmation venue.</li>' +
       '</ol></div>',
     schedule:
-      '<div class="info-card"><h4><span>&#128197;</span> Schedule of Confirmation</h4><p class="read-note"><strong>Schedule Notice:</strong> Use the checker to view your assigned satellite campus, first-choice course, and report date.</p><ul class="quick-points"><li>SLSU Tiaong Campus: May 5-6, 2026</li><li>SLSU Tayabas Campus: May 5-6, 2026</li><li>Please proceed to the satellite campus indicated in your result on your scheduled confirmation date.</li><li>Bring all required documents and arrive at least 30 minutes early.</li><li>Non-appearance means forfeiture of your slot.</li></ul></div><div class="info-card"><h4><span>&#128260;</span> Schedule of Reconsideration</h4><ul class="quick-points"><li>SLSU Tiaong Campus: May 11, 2026</li><li>SLSU Tayabas Campus: May 11, 2026</li><li>Reconsideration is subject to approval and the availability of slots.</li></ul></div>',
+      '<div class="info-card"><h4><span>&#128197;</span> Schedule of Confirmation</h4><p class="read-note"><strong>Schedule Notice:</strong> Use the checker to view your assigned satellite campus, first-choice course, and report date. Confirmation starts at <strong>08:00 AM</strong>.</p><ul class="quick-points"><li>SLSU Tiaong Campus: May 5-6, 2026, starting at 08:00 AM</li><li>SLSU Tayabas Campus: May 5-6, 2026, starting at 08:00 AM</li><li>Please proceed to the satellite campus indicated in your result on your scheduled confirmation date.</li><li>Bring all required documents and arrive at least 30 minutes early.</li><li>Non-appearance means forfeiture of your slot.</li></ul></div><div class="info-card"><h4><span>&#128260;</span> Schedule of Reconsideration</h4><ul class="quick-points"><li>SLSU Tiaong Campus: May 11, 2026, starting at 08:00 AM</li><li>SLSU Tayabas Campus: May 11, 2026, starting at 08:00 AM</li><li>Reconsideration is subject to approval and the availability of slots.</li></ul></div>',
     requirements:
       '<div class="info-card"><h4><span>&#128203;</span> General Admission Requirements</h4><div class="req-section"><p class="req-heading">Primary Documents and Forms (Priority)</p><ul class="req-list"><li>Examination Permit (duly signed by test administrator)</li></ul></div><div class="req-section"><p class="req-heading">Academic Records (Submit whichever is applicable)</p><ul class="req-list"><li>Original &amp; Photocopy - Grade 12 Report Card</li><li>Original &amp; Photocopy - Transcript of Records (For Transferees)</li><li>Original &amp; Photocopy - ALS Certification of rating qualified for College Admission</li></ul></div><div class="req-section"><p class="req-heading">Supporting Documents</p><ul class="req-list"><li>2x2 Picture with nametag, white background (4 pcs)</li><li>Original &amp; Photocopy - Birth Certificate from PSA</li><li>Original &amp; Photocopy - Good Moral Character</li><li>Original &amp; Photocopy - Police Clearance</li></ul></div><div class="req-section"><p class="req-heading">Supplies</p><ul class="req-list"><li>Long White Folders (2 pcs)</li><li>Black Ballpen</li></ul></div></div>',
     medical:
@@ -456,7 +456,7 @@ function renderNotFoundResult(mode) {
       '</div>' +
     '</div>' +
     '<div class="res-divider-warning"></div>' +
-    '<p class="advisory-text">Thank you for checking. Your Application Number is not found in the Satellite Campus qualifier data currently uploaded to this checker.<br><br>Please wait for further announcements from your target satellite campus, the <a href="https://www.facebook.com/slsuMain" target="_blank" rel="noopener noreferrer" class="fb-link">SLSU Main Campus</a>, and the <a href="https://www.facebook.com/SLSUAdmission" target="_blank" rel="noopener noreferrer" class="fb-link">SLSU Student Admission Office</a>.</p>' +
+    '<p class="advisory-text">Thank you for your interest in the SLSU (Satellite Campus). While you are not included in the list of qualified applicants at this time, other opportunities&mdash;such as reconsideration&mdash;may still be available, subject to the availability of slots.</p>' +
   '</div>';
 }
 
@@ -566,15 +566,16 @@ async function checkResult() {
             '<div class="res-row"><div class="res-label res-label-info">Satellite Campus</div><div class="res-val program program-info">' + escapeHtml(displaySatellite) + '</div></div>' +
             '<div class="res-row"><div class="res-label res-label-info">Course</div><div class="res-val program program-info">' + escapeHtml(displayCourse) + '</div></div>' +
             '<div class="res-row"><div class="res-label res-label-info">Date</div><div class="res-val program program-info">' + escapeHtml(displayDate) + '</div></div>' +
+            '<div class="res-row"><div class="res-label res-label-info">Start Time</div><div class="res-val program program-info">08:00 AM</div></div>' +
             '<div class="congrats-note">' +
               'Congratulations. You are included in the SLSU Satellite Campus qualifier list for A.Y. 2026-2027.<br><br>' +
-              'Please report to <strong>' + escapeHtml(displaySatellite) + '</strong> on <strong>' + escapeHtml(displayDate) + '</strong> for your first-choice course, <strong>' + escapeHtml(displayCourse) + '</strong>. Bring your required documents and follow the instructions of the assigned campus.' +
+              'Please report to <strong>' + escapeHtml(displaySatellite) + '</strong> on <strong>' + escapeHtml(displayDate) + '</strong> at <strong>08:00 AM</strong> for your first-choice course, <strong>' + escapeHtml(displayCourse) + '</strong>. Bring your required documents and follow the instructions of the assigned campus.' +
             '</div>' +
             '<p class="screenshot-note">Screenshot this as proof of your assigned campus and schedule.</p>' +
           '</div>';
-      } else if (payload.type === 'main_dpwas' && currentCheckerMode === 'dpwas') {
+      } else if (payload.type === 'main_dpwas' && (currentCheckerMode === 'dpwas' || currentCheckerMode === 'satellite')) {
         resultEl.innerHTML = renderDpwasResult(displayKey, payload);
-      } else if (payload.type === 'main_first_choice' && currentCheckerMode === 'main') {
+      } else if (payload.type === 'main_first_choice' && (currentCheckerMode === 'main' || currentCheckerMode === 'satellite')) {
         resultEl.innerHTML = renderMainQualifierResult(displayKey, payload);
       } else if (payload.type === 'main_first_choice' && currentCheckerMode === 'dpwas') {
         resultEl.innerHTML = renderDpwasFirstReleaseResult(displayKey, payload);
@@ -605,4 +606,3 @@ updateCheckerCopy();
 setActiveModeButton(currentCheckerMode);
 renderInfoPanels(currentCheckerMode);
 loadAllData();
-
