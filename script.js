@@ -30,12 +30,13 @@ function buildApiUrl(path, queryParams) {
 
 var CHECKER_MODES = {
   main: {
-    title: 'Check Your Main Campus Qualification',
-    subtitle: 'Enter your Application Number as indicated on your Examination Permit to view your Main Campus first-choice qualifier status.',
+    title: 'Check Your Result',
+    subtitle: 'Enter your Application Number as indicated on your Examination Permit to view your admission result.',
     infoSubtitle: 'Important instructions for Main Campus first-choice qualifiers confirming slots.',
     loadingText: 'Preparing secure Main Campus qualifier lookup&hellip;',
     loadErrorText: 'Could not load secure Main Campus qualifier data.',
     emptyText: 'Please enter your Application Number before checking.',
+    buttonText: 'Check My Result',
     placeholder: 'e.g. 2026-00001'
   },
   dpwas: {
@@ -45,6 +46,7 @@ var CHECKER_MODES = {
     loadingText: 'Preparing secure DPWAS eligible lookup&hellip;',
     loadErrorText: 'Could not load secure DPWAS eligible data.',
     emptyText: 'Please enter your Application Number before checking.',
+    buttonText: 'Check My Status',
     placeholder: 'e.g. 2026-00001'
   },
   satellite: {
@@ -54,6 +56,7 @@ var CHECKER_MODES = {
     loadingText: 'Preparing secure satellite campus qualifier lookup&hellip;',
     loadErrorText: 'Could not load secure satellite qualifier data.',
     emptyText: 'Please enter your Application Number before checking.',
+    buttonText: 'Check My Status',
     placeholder: 'e.g. 2026-00001'
   }
 };
@@ -314,6 +317,8 @@ function updateCheckerCopy() {
   if (infoTitleEl) infoTitleEl.textContent = 'Information & Reminders';
   if (infoSubtitleEl) infoSubtitleEl.textContent = modeConfig.infoSubtitle;
   if (inputEl) inputEl.setAttribute('placeholder', modeConfig.placeholder);
+  var buttonEl = document.getElementById('checkBtn');
+  if (buttonEl && !buttonEl.disabled) buttonEl.innerHTML = '<span class="btn-shine"></span>' + modeConfig.buttonText;
 }
 
 function resetInfoTabs() {
@@ -351,26 +356,102 @@ function switchCheckerMode(mode) {
 }
 
 function renderNotFoundResult(mode) {
-  var modeLabel = mode === 'main'
-    ? 'Main Campus first-choice qualifier'
-    : mode === 'dpwas'
-      ? 'Main Campus DPWAS eligible'
-      : 'Satellite Campus qualifier';
-  var advisory = mode === 'main'
-    ? 'Your Application Number is not found in the Main Campus first-choice qualifier data currently uploaded to this checker.'
-    : mode === 'dpwas'
-      ? 'Your Application Number is not found in the Main Campus DPWAS eligible data currently uploaded to this checker.'
-      : 'Your Application Number is not found in the Satellite Campus qualifier data currently uploaded to this checker.';
+  if (mode === 'main') {
+    return '<div class="result-box result-fail">' +
+      '<div class="res-header">' +
+        '<div class="res-icon icon-fail">&#10069;</div>' +
+        '<div class="res-header-text">' +
+          '<div class="res-tag res-tag-fail">NOT ON THE QUALIFIER LIST</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="res-divider-red"></div>' +
+      '<p class="advisory-text">Southern Luzon State University (SLSU) will release the <strong>Degree Program with Available Slot (DPWAS)</strong> and <strong>Reconsideration</strong> lists for remaining available slots.</p>' +
+      '<p class="advisory-text">The lists, along with the corresponding guidelines, will be posted <strong>after the confirmation of slots for qualified applicants has been completed</strong>.</p>' +
+      '<p class="advisory-text">For updates and further instructions, please wait for official announcements on the SLSU Facebook page and website.</p>' +
+    '</div>';
+  }
+
+  if (mode === 'dpwas') {
+    return '<div class="result-box result-warning">' +
+      '<div class="res-header">' +
+        '<div class="res-icon icon-warning">&#8505;</div>' +
+        '<div class="res-header-text">' +
+          '<div class="res-tag res-tag-warning">NOT ON THE DPWAS LIST</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="res-divider-warning"></div>' +
+      '<p class="advisory-text">Thank you for your interest in SLSU. Although you are not included in the DPWAS list at this time, other opportunities such as reconsideration may still be available.<br><br>Please stay tuned for further announcements through the official Facebook pages of <a href="https://www.facebook.com/slsuMain" target="_blank" rel="noopener noreferrer" class="fb-link">SLSU Main</a> or the <a href="https://www.facebook.com/SLSUAdmission" target="_blank" rel="noopener noreferrer" class="fb-link">SLSU Student Admission Office</a>.</p>' +
+    '</div>';
+  }
 
   return '<div class="result-box result-warning">' +
     '<div class="res-header">' +
       '<div class="res-icon icon-warning">&#8505;</div>' +
       '<div class="res-header-text">' +
-        '<div class="res-tag res-tag-warning">NO ' + escapeHtml(modeLabel).toUpperCase() + ' RECORD FOUND</div>' +
+        '<div class="res-tag res-tag-warning">NO SATELLITE CAMPUS QUALIFIER RECORD FOUND</div>' +
       '</div>' +
     '</div>' +
     '<div class="res-divider-warning"></div>' +
-    '<p class="advisory-text">Thank you for checking. ' + advisory + '<br><br>Please wait for further announcements from the <a href="https://www.facebook.com/slsuMain" target="_blank" rel="noopener noreferrer" class="fb-link">SLSU Main Campus</a> and the <a href="https://www.facebook.com/SLSUAdmission" target="_blank" rel="noopener noreferrer" class="fb-link">SLSU Student Admission Office</a>.</p>' +
+    '<p class="advisory-text">Thank you for checking. Your Application Number is not found in the Satellite Campus qualifier data currently uploaded to this checker.<br><br>Please wait for further announcements from your target satellite campus, the <a href="https://www.facebook.com/slsuMain" target="_blank" rel="noopener noreferrer" class="fb-link">SLSU Main Campus</a>, and the <a href="https://www.facebook.com/SLSUAdmission" target="_blank" rel="noopener noreferrer" class="fb-link">SLSU Student Admission Office</a>.</p>' +
+  '</div>';
+}
+
+function renderMainQualifierResult(displayKey, payload) {
+  var displayProgram = String(payload.program || '').trim() || 'To be announced';
+  return '<div class="result-box result-success">' +
+    '<div class="res-header">' +
+      '<div class="res-icon icon-success">&#127881;</div>' +
+      '<div class="res-header-text">' +
+        '<div class="res-tag">&#10003; Qualified</div>' +
+        '<h3>Congratulations!</h3>' +
+      '</div>' +
+    '</div>' +
+    '<div class="res-divider"></div>' +
+    '<div class="res-row"><div class="res-label">App. No.</div><div class="res-val">' + escapeHtml(displayKey) + '</div></div>' +
+    '<div class="res-row"><div class="res-label">1st Choice Program</div><div class="res-val program">' + escapeHtml(displayProgram) + '</div></div>' +
+    '<div class="congrats-note">' +
+      'You have qualified for your first choice program. Please proceed to the <strong>SLSU Student Admission Office</strong> on your scheduled confirmation date. Bring all required documents and arrive at least <strong>30 minutes early</strong>. Non-appearance means <strong>forfeiture of your slot</strong>.' +
+    '</div>' +
+  '</div>';
+}
+
+function renderDpwasResult(displayKey, payload) {
+  var dpwasDate = formatDateString(payload.date) || 'To be announced';
+  var dpwasTime = formatTimeRange(payload.time) || 'To be announced';
+  return '<div class="result-box result-success">' +
+    '<div class="res-header">' +
+      '<div class="res-icon icon-success">&#127881;</div>' +
+      '<div class="res-header-text">' +
+        '<h3>DPWAS Eligible</h3>' +
+      '</div>' +
+    '</div>' +
+    '<div class="res-divider"></div>' +
+    '<div class="res-row"><div class="res-label">App. No.</div><div class="res-val">' + escapeHtml(displayKey) + '</div></div>' +
+    '<div class="res-row"><div class="res-label">Date</div><div class="res-val program">' + escapeHtml(dpwasDate) + '</div></div>' +
+    '<div class="res-row"><div class="res-label">Time</div><div class="res-val program">' + escapeHtml(dpwasTime) + '</div></div>' +
+    '<div class="congrats-note">' +
+      'Thank you for your participation in the SLSU College Admissions 2026.<br><br>' +
+      'The slots in the degree program you applied for have already been filled. However, you have been placed on the waitlist under the Degree Program with Available Slots (DPWAS) category at SLSU Main Campus.<br><br>' +
+      'Your admission will depend on the availability of slots after the confirmation period, during which waitlisted applicants may be selected to fill vacated slots. Please note that being waitlisted under DPWAS does not guarantee admission to the university.<br><br>' +
+      'You are advised to report on ' + escapeHtml(dpwasDate) + ', from ' + escapeHtml(dpwasTime) + ' at the SLSU Gymnasium in Lucban, Quezon. Kindly bring all required documents and arrive at least 30 minutes early. Rescheduling will not be accommodated.' +
+    '</div>' +
+    '<p class="screenshot-note">Screenshot this as proof of your schedule.</p>' +
+  '</div>';
+}
+
+function renderDpwasFirstReleaseResult(displayKey, payload) {
+  var displayProgram = String(payload.program || '').trim() || 'To be announced';
+  return '<div class="result-box result-info">' +
+    '<div class="res-header">' +
+      '<div class="res-icon icon-info">&#10003;</div>' +
+      '<div class="res-header-text">' +
+        '<div class="res-tag res-tag-info">&#10003; First Release Qualifier</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="res-divider"></div>' +
+    '<div class="res-row"><div class="res-label res-label-info">App. No.</div><div class="res-val">' + escapeHtml(displayKey) + '</div></div>' +
+    '<div class="res-row"><div class="res-label res-label-info">1st Choice Program</div><div class="res-val program program-info">' + escapeHtml(displayProgram) + '</div></div>' +
+    '<div class="congrats-note congrats-note-info">You are included in the first admission results and have qualified for your first-choice program.</div>' +
   '</div>';
 }
 
@@ -426,39 +507,11 @@ async function checkResult() {
             '<p class="screenshot-note">Screenshot this as proof of your assigned campus and schedule.</p>' +
           '</div>';
       } else if (payload.type === 'main_dpwas' && currentCheckerMode === 'dpwas') {
-        var dpwasDate = formatDateString(payload.date) || 'To be announced';
-        var dpwasTime = formatTimeRange(payload.time) || 'To be announced';
-        resultEl.innerHTML =
-          '<div class="result-box result-info">' +
-            '<div class="res-header">' +
-              '<div class="res-icon icon-info">&#10003;</div>' +
-              '<div class="res-header-text">' +
-                '<div class="res-tag res-tag-info">MAIN CAMPUS DPWAS LIST</div>' +
-              '</div>' +
-            '</div>' +
-            '<div class="res-divider"></div>' +
-            '<div class="res-row"><div class="res-label res-label-info">App. No.</div><div class="res-val">' + escapeHtml(displayKey) + '</div></div>' +
-            '<div class="res-row"><div class="res-label res-label-info">Date</div><div class="res-val program program-info">' + escapeHtml(dpwasDate) + '</div></div>' +
-            '<div class="res-row"><div class="res-label res-label-info">Time</div><div class="res-val program program-info">' + escapeHtml(dpwasTime) + '</div></div>' +
-            '<div class="congrats-note congrats-note-info">This Application Number is included in the SLSU Main Campus DPWAS list. Please report on <strong>' + escapeHtml(dpwasDate) + '</strong> at <strong>' + escapeHtml(dpwasTime) + '</strong> and follow the Main Campus DPWAS instructions.</div>' +
-          '</div>';
+        resultEl.innerHTML = renderDpwasResult(displayKey, payload);
       } else if (payload.type === 'main_first_choice' && currentCheckerMode === 'main') {
-        var displayProgram = String(payload.program || '').trim() || 'To be announced';
-        var displayCollege = getMainCampusCollege(displayProgram);
-        resultEl.innerHTML =
-          '<div class="result-box result-info">' +
-            '<div class="res-header">' +
-              '<div class="res-icon icon-info">&#10003;</div>' +
-              '<div class="res-header-text">' +
-                '<div class="res-tag res-tag-info">MAIN CAMPUS FIRST-CHOICE QUALIFIER</div>' +
-              '</div>' +
-            '</div>' +
-            '<div class="res-divider"></div>' +
-            '<div class="res-row"><div class="res-label res-label-info">App. No.</div><div class="res-val">' + escapeHtml(displayKey) + '</div></div>' +
-            '<div class="res-row"><div class="res-label res-label-info">College</div><div class="res-val program program-info">' + escapeHtml(displayCollege) + '</div></div>' +
-            '<div class="res-row"><div class="res-label res-label-info">Course</div><div class="res-val program program-info">' + escapeHtml(displayProgram) + '</div></div>' +
-            '<div class="congrats-note congrats-note-info">This Application Number is included in the SLSU Main Campus first-choice qualifier list under <strong>' + escapeHtml(displayCollege) + '</strong> for <strong>' + escapeHtml(displayProgram) + '</strong>.</div>' +
-          '</div>';
+        resultEl.innerHTML = renderMainQualifierResult(displayKey, payload);
+      } else if (payload.type === 'main_first_choice' && currentCheckerMode === 'dpwas') {
+        resultEl.innerHTML = renderDpwasFirstReleaseResult(displayKey, payload);
       } else {
         resultEl.innerHTML = renderNotFoundResult(currentCheckerMode);
       }
@@ -469,7 +522,7 @@ async function checkResult() {
     resultEl.innerHTML = '<div class="result-box result-fail"><p style="font-size:14px;color:#8b4513;">&#9888;&#65039; ' + escapeHtml(err.message) + '</p></div>';
   } finally {
     buttonEl.disabled = false;
-    buttonEl.innerHTML = '<span class="btn-shine"></span>Check My Status';
+    buttonEl.innerHTML = '<span class="btn-shine"></span>' + modeConfig.buttonText;
   }
 
   resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

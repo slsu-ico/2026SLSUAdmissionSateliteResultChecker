@@ -208,6 +208,7 @@ module.exports = async function handler(req, res) {
     if (prototypeRecord && (
       (mode === 'satellite' && prototypeRecord.type === 'satellite_qualifier') ||
       (mode === 'dpwas' && prototypeRecord.type === 'main_dpwas') ||
+      (mode === 'dpwas' && prototypeRecord.type === 'main_first_choice') ||
       (mode === 'main' && prototypeRecord.type === 'main_first_choice')
     )) {
       return res.status(200).json(prototypeRecord);
@@ -233,16 +234,26 @@ module.exports = async function handler(req, res) {
 
     if (mode === 'dpwas') {
       var dpwasRecord = findEncryptedRecord(DPWAS_FILE, appHash, mainSecretName);
-      if (!dpwasRecord) {
-        return res.status(200).json({ found: false });
+      if (dpwasRecord) {
+        var dpwasInfo = JSON.parse(dpwasRecord);
+        return res.status(200).json({
+          found: true,
+          type: 'main_dpwas',
+          date: dpwasInfo.date,
+          time: dpwasInfo.time
+        });
       }
-      var dpwasInfo = JSON.parse(dpwasRecord);
-      return res.status(200).json({
-        found: true,
-        type: 'main_dpwas',
-        date: dpwasInfo.date,
-        time: dpwasInfo.time
-      });
+
+      var dpwasFirstReleaseRecord = findEncryptedRecord(FIRST_RELEASE_FILE, appHash, mainSecretName);
+      if (dpwasFirstReleaseRecord) {
+        return res.status(200).json({
+          found: true,
+          type: 'main_first_choice',
+          program: dpwasFirstReleaseRecord
+        });
+      }
+
+      return res.status(200).json({ found: false });
     }
 
     var firstReleaseRecord = findEncryptedRecord(FIRST_RELEASE_FILE, appHash, mainSecretName);
