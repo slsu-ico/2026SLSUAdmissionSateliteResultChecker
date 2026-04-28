@@ -177,6 +177,12 @@ function getPrototypeRecord(normalized) {
   return PROTOTYPE_RECORDS[normalized] || null;
 }
 
+function normalizeMode(value) {
+  var mode = String(value || 'satellite').toLowerCase();
+  if (mode === 'main' || mode === 'dpwas' || mode === 'satellite') return mode;
+  return 'satellite';
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
@@ -185,6 +191,7 @@ module.exports = async function handler(req, res) {
 
   try {
     var query = req.query && typeof req.query.q === 'string' ? req.query.q : '';
+    var mode = normalizeMode(req.query && req.query.mode);
     var normalized = normalizeAppNo(query);
 
     if (!normalized) {
@@ -197,27 +204,38 @@ module.exports = async function handler(req, res) {
     }
 
     var appHash = crypto.createHash('sha256').update(normalized, 'utf8').digest('hex');
-    var satelliteRecord = findEncryptedRecord(SATELLITE_FILE, appHash);
-
-    if (satelliteRecord) {
-      var qualifierInfo = JSON.parse(satelliteRecord);
-      return res.status(200).json({
-        found: true,
-        type: 'satellite_qualifier',
-        satellite: qualifierInfo.satellite,
-        course: qualifierInfo.course,
-        date: qualifierInfo.date
-      });
-    }
-
     var prototypeRecord = getPrototypeRecord(normalized);
-    if (prototypeRecord) {
+    if (prototypeRecord && (
+      (mode === 'satellite' && prototypeRecord.type === 'satellite_qualifier') ||
+      (mode === 'dpwas' && prototypeRecord.type === 'main_dpwas') ||
+      (mode === 'main' && prototypeRecord.type === 'main_first_choice')
+    )) {
       return res.status(200).json(prototypeRecord);
     }
 
     var mainSecretName = getEnv('MAIN_DATA_ENCRYPTION_KEY') ? 'MAIN_DATA_ENCRYPTION_KEY' : 'DATA_ENCRYPTION_KEY';
-    var dpwasRecord = findEncryptedRecord(DPWAS_FILE, appHash, mainSecretName);
-    if (dpwasRecord) {
+
+    if (mode === 'satellite') {
+      var satelliteRecord = findEncryptedRecord(SATELLITE_FILE, appHash);
+      if (satelliteRecord) {
+        var qualifierInfo = JSON.parse(satelliteRecord);
+        return res.status(200).json({
+          found: true,
+          type: 'satellite_qualifier',
+          satellite: qualifierInfo.satellite,
+          course: qualifierInfo.course,
+          date: qualifierInfo.date
+        });
+      }
+
+      return res.status(200).json({ found: false });
+    }
+
+    if (mode === 'dpwas') {
+      var dpwasRecord = findEncryptedRecord(DPWAS_FILE, appHash, mainSecretName);
+      if (!dpwasRecord) {
+        return res.status(200).json({ found: false });
+      }
       var dpwasInfo = JSON.parse(dpwasRecord);
       return res.status(200).json({
         found: true,

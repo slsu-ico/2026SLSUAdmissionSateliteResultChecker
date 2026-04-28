@@ -15,7 +15,7 @@
     <div class="logo-ring"><img src="SLSU Logo with outline.png" alt="SLSU Logo"></div>
     <div class="header-copy">
       <div class="header-text">
-        <h1>SLSU Satellite Campus<br>Qualifier Checker</h1>
+        <h1>SLSU Admission<br>Qualifier Checker</h1>
         <p>Southern Luzon State University &middot; Satellite Campuses</p>
         <div class="header-year">A.Y. 2026-2027</div>
       </div>
@@ -67,86 +67,18 @@
     <div id="result"></div>
   </div>
 
-  <p class="section-title">Information &amp; Reminders</p>
-  <p class="section-sub">Important instructions for qualifiers reporting to SLSU Satellite Campuses.</p>
+  <p class="section-title" id="infoTitle">Information &amp; Reminders</p>
+  <p class="section-sub" id="infoSubtitle">Important instructions for Satellite Campus qualified applicants confirming slots.</p>
 
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab(this,'reminders')">&#128204; Reminders</button>
     <button class="tab-btn" onclick="switchTab(this,'schedule')">&#128197; Schedule</button>
     <button class="tab-btn" onclick="switchTab(this,'requirements')">&#128203; Requirements</button>
+    <button class="tab-btn" onclick="switchTab(this,'medical')">&#129514; Medical Exams</button>
     <button class="tab-btn" onclick="switchTab(this,'faq')">&#10067; FAQs</button>
   </div>
 
-  <div id="tab-reminders" class="tab-panel active">
-    <div class="info-card">
-      <h4><span>&#128204;</span> Important Reminders</h4>
-      <ol class="reminder-list">
-        <li>Only applicants included in the satellite campus qualifier list and scheduled for the date shown in the checker will be entertained.</li>
-        <li>Report to the satellite campus indicated in your result. Do not proceed to another campus unless officially advised.</li>
-        <li>Bring your Examination Permit, admission forms, and required supporting documents for verification.</li>
-        <li>College applicants are required to wear a plain white shirt and maong pants when reporting to the campus.</li>
-        <li>No reservation fees are collected to confirm an admission slot.</li>
-        <li>Non-appearance on the given schedule may result in forfeiture of the slot.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div id="tab-schedule" class="tab-panel">
-    <div class="info-card">
-      <h4><span>&#128197;</span> Reporting Schedule</h4>
-      <p class="read-note"><strong>Schedule Notice:</strong> Satellite campus schedules are individualized. Use the checker to view your assigned campus and date.</p>
-      <ul class="quick-points">
-        <li>Venue: The SLSU Satellite Campus shown in your result.</li>
-        <li>Please arrive early and follow the instructions of the campus admission personnel.</li>
-      </ul>
-    </div>
-  </div>
-
-  <div id="tab-requirements" class="tab-panel">
-    <div class="info-card">
-      <h4><span>&#128203;</span> General Admission Requirements</h4>
-      <div class="req-section">
-        <p class="req-heading">Primary Documents</p>
-        <ul class="req-list">
-          <li>Examination Permit duly signed by the test administrator</li>
-          <li>Filled out admission forms</li>
-          <li>Original and photocopy of Grade 12 Report Card or applicable academic record</li>
-        </ul>
-      </div>
-      <div class="req-section">
-        <p class="req-heading">Supporting Documents</p>
-        <ul class="req-list">
-          <li>2x2 picture with nametag and white background</li>
-          <li>Original and photocopy of PSA Birth Certificate</li>
-          <li>Original and photocopy of Good Moral Character</li>
-          <li>Other documents required by the assigned satellite campus</li>
-        </ul>
-      </div>
-      <p class="req-link-card">Forms Link: <a href="https://tinyurl.com/SLSUAdmissionForms" target="_blank" rel="noopener noreferrer" class="fb-link">https://tinyurl.com/SLSUAdmissionForms</a></p>
-    </div>
-  </div>
-
-  <div id="tab-faq" class="tab-panel">
-    <div class="info-card">
-      <h4><span>&#10067;</span> Frequently Asked Questions</h4>
-      <div class="faq-item">
-        <p class="faq-q">What will the checker show?</p>
-        <p class="faq-a">It will show your assigned satellite campus, your first-choice course, and the date when you should report to that campus.</p>
-      </div>
-      <div class="faq-item">
-        <p class="faq-q">What if my application number is not found?</p>
-        <p class="faq-a">It means there is no matching record in the data currently uploaded to this checker. Some satellite campuses may release qualifier lists on different dates, so please wait for announcements from your target campus and the SLSU Student Admission Office.</p>
-      </div>
-      <div class="faq-item">
-        <p class="faq-q">Can I report to a different satellite campus?</p>
-        <p class="faq-a">No. Applicants should report to the satellite campus indicated in their result unless officially instructed otherwise.</p>
-      </div>
-      <div class="faq-item">
-        <p class="faq-q">Should I screenshot my result?</p>
-        <p class="faq-a">Yes. Keep a screenshot of your result as proof of your assigned campus and schedule.</p>
-      </div>
-    </div>
-  </div>
+  <div id="infoPanels"></div>
 
 </main>
 
@@ -161,4 +93,3 @@
 <script src="script.js"></script>
 </body>
 </html>
-

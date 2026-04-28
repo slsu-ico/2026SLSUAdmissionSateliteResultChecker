@@ -28,6 +28,154 @@ function buildApiUrl(path, queryParams) {
   return url;
 }
 
+var CHECKER_MODES = {
+  main: {
+    title: 'Check Your Main Campus Qualification',
+    subtitle: 'Enter your Application Number as indicated on your Examination Permit to view your Main Campus first-choice qualifier status.',
+    infoSubtitle: 'Important instructions for Main Campus first-choice qualifiers confirming slots.',
+    loadingText: 'Preparing secure Main Campus qualifier lookup&hellip;',
+    loadErrorText: 'Could not load secure Main Campus qualifier data.',
+    emptyText: 'Please enter your Application Number before checking.',
+    placeholder: 'e.g. 2026-00001'
+  },
+  dpwas: {
+    title: 'Check Your DPWAS Eligibility',
+    subtitle: 'Enter your Application Number as indicated on your Examination Permit to view your Degree Programs with Available Slots (DPWAS) eligibility and schedule.',
+    infoSubtitle: 'Important instructions for DPWAS eligible applicants confirming slots.',
+    loadingText: 'Preparing secure DPWAS eligible lookup&hellip;',
+    loadErrorText: 'Could not load secure DPWAS eligible data.',
+    emptyText: 'Please enter your Application Number before checking.',
+    placeholder: 'e.g. 2026-00001'
+  },
+  satellite: {
+    title: 'Check Your Satellite Campus Qualification',
+    subtitle: 'Enter your Application Number as indicated on your Examination Permit to view your assigned satellite campus, first-choice course, and reporting schedule.',
+    infoSubtitle: 'Important instructions for Satellite Campus qualified applicants confirming slots.',
+    loadingText: 'Preparing secure satellite campus qualifier lookup&hellip;',
+    loadErrorText: 'Could not load secure satellite qualifier data.',
+    emptyText: 'Please enter your Application Number before checking.',
+    placeholder: 'e.g. 2026-00001'
+  }
+};
+
+var currentCheckerMode = 'satellite';
+
+var COMMON_FAQ_HTML =
+  '<div class="faq-item"><p class="faq-q">Does the posted admission result include all SLSU campuses?</p><p class="faq-a">No. Results for the Main Campus are posted first, followed by Satellite Campuses after all their exams and evaluations are completed.</p></div>' +
+  '<div class="faq-item"><p class="faq-q">How will I know if I am admitted to the program I applied for?</p><p class="faq-a">Check the official Facebook page and the SLSU website for the list of qualifiers, DPWAS eligible applicants, and satellite campus qualifiers.</p></div>' +
+  '<div class="faq-item"><p class="faq-q">If I did not confirm my slot, can I recommend someone to replace me?</p><p class="faq-a">No. Slots are forfeited and given to the next qualified applicant. Replacement recommendations are not allowed.</p></div>' +
+  '<div class="faq-item"><p class="faq-q">Are there any reservation fees or any other fees that I need to pay upon confirmation of my slot?</p><p class="faq-a">None. There are no fees to be collected to confirm your slot.</p></div>';
+
+var INFO_CONTENT = {
+  main: {
+    reminders:
+      '<div class="info-card"><h4><span>&#128204;</span> Important Reminders</h4><ol class="reminder-list">' +
+        '<li>College applicants must pass the interview, laboratory examination for specific programs, and other admission requirements to proceed with the confirmation process.</li>' +
+        '<li><strong>Incomplete requirements will be processed provided that primary documents such as original report card or academic records are presented on the day of confirmation.</strong> Qualifiers should bring all listed requirements.</li>' +
+        '<li>College applicants are <strong>required to wear a plain white shirt and maong pants</strong> during slot confirmation.</li>' +
+        '<li>The Student Admission Staff will distribute queuing numbers starting at 7:00 AM at SLSU Gate 1.</li>' +
+        '<li><strong>No reservation fees</strong> are to be collected to confirm the admission slot.</li>' +
+        '<li>Applicants who require a companion may bring only one (1) person inside the premises.</li>' +
+        '<li>Applicants for BS Nursing, BS Radiologic Technology, BS Midwifery, BS Accountancy, BS Hospitality Management, BA Psychology, and College of Agriculture are <strong>required to be accompanied</strong> by a parent or guardian for a short program orientation.</li>' +
+        '<li>Non-appearance on the given schedule means forfeiture of the admission slot. Qualifiers with valid reasons may report to the confirmation venue on <strong>April 27 and 28, 2026 only</strong>.</li>' +
+        '<li><strong>Only qualified applicants will be entertained.</strong></li>' +
+        '<li>Practice CLAYGO before leaving the confirmation venue.</li>' +
+      '</ol></div>',
+    schedule:
+      '<div class="info-card"><h4><span>&#128197;</span> Confirmation Schedule (Main Campus Qualifiers)</h4><div class="schedule-grid">' +
+        '<div class="sched-date">April 20, 2026</div><div class="sched-college">College of Engineering</div>' +
+        '<div class="sched-date">April 21, 2026</div><div class="sched-college">College of Agriculture<br>College of Administration, Business, Hospitality and Accountancy</div>' +
+        '<div class="sched-date">April 22, 2026</div><div class="sched-college">College of Allied Medicine<br>College of Teacher Education</div>' +
+        '<div class="sched-date no-border">April 23, 2026</div><div class="sched-college no-border">College of Industrial Technology<br>College of Arts and Sciences</div>' +
+      '</div></div>',
+    requirements:
+      '<div class="info-card"><h4><span>&#128203;</span> General Admission Requirements</h4><div class="req-grid">' +
+        '<div class="req-item">Examination Permit (duly signed by test administrator)</div>' +
+        '<div class="req-item">Long White Folders (2 pcs)</div>' +
+        '<div class="req-item">Black Ballpen</div>' +
+        '<div class="req-item">2x2 Picture with nametag, white background (4 pcs)</div>' +
+        '<div class="req-item">Original &amp; Photocopy - Birth Certificate from PSA</div>' +
+        '<div class="req-item">Original &amp; Photocopy - Good Moral Character</div>' +
+        '<div class="req-item">Original &amp; Photocopy - Police Clearance</div>' +
+        '<div class="req-item">Original &amp; Photocopy - Academic Records</div>' +
+        '<div class="req-item">Grade 12 Report Card</div>' +
+        '<div class="req-item">Transcript of Records (For Transferees)</div>' +
+        '<div class="req-item">ALS Certification of Rating qualified for College Admission</div>' +
+      '</div></div>',
+    medical:
+      '<div class="info-card"><h4><span>&#129514;</span> Additional Medical Laboratory Examination Results</h4><table class="med-table"><thead><tr><th>Program</th><th>Required Tests</th></tr></thead><tbody>' +
+        '<tr><td>Bachelor of Science in Nursing<br>Bachelor of Science in Radiologic Technology<br>Bachelor of Science in Midwifery</td><td>&bull; Chest X-Ray<br>&bull; CBC<br>&bull; Hepa B Screening (HBSAg, Anti-HBS, Anti-HBc)</td></tr>' +
+        '<tr><td>Bachelor of Science in Hospitality Management<br>Bachelor of Industrial Technology major in Culinary Technology</td><td>&bull; Chest X-Ray<br>&bull; Hepa B Screening (HBSAg, Anti-HBS, Anti-HBc)</td></tr>' +
+      '</tbody></table></div>',
+    faq:
+      '<div class="info-card"><h4><span>&#10067;</span> Frequently Asked Questions</h4>' +
+        COMMON_FAQ_HTML +
+        '<div class="faq-item"><p class="faq-q">What if my examinee number is not on the qualifiers or DPWAS lists?</p><p class="faq-a">You may apply for reconsideration, subject to approval and slot availability. Follow official announcements and visit the Admission Office on the scheduled date.</p></div>' +
+        '<div class="faq-item"><p class="faq-q">Can I confirm and enroll in SLSU Main Campus if I took an entrance exam at an SLSU Satellite Campus?</p><p class="faq-a">No. Applications for SLSU Satellite Campuses are only valid for those respective campuses.</p></div>' +
+        '<div class="faq-item"><p class="faq-q">Can I still confirm my slot if some confirmation requirements are incomplete?</p><p class="faq-a">Yes, but your original report card or academic record must be presented on the day of confirmation.</p></div>' +
+      '</div>'
+  },
+  dpwas: {
+    reminders:
+      '<div class="info-card"><h4><span>&#128204;</span> Important Reminders</h4><ol class="reminder-list">' +
+        '<li>College applicants must pass the interview, laboratory examination for specific programs, and other admission requirements to proceed with the confirmation process.</li>' +
+        '<li><strong>Incomplete requirements will be processed, provided that primary documents such as academic records and filled out Admission Forms are presented on the day of confirmation.</strong></li>' +
+        '<li>DPWAS applicants must bring filled out and signed Reconsideration and Waiver Forms. The waiver must be signed by the parent or guardian.</li>' +
+        '<li>A photocopy of the parent or guardian valid ID with signature is required for validation.</li>' +
+        '<li>College applicants are <strong>required to wear a plain white shirt and maong pants</strong> during slot confirmation.</li>' +
+        '<li><strong>No reservation fees</strong> are to be collected to confirm the admission slot.</li>' +
+        '<li><strong>Only those who are scheduled will be entertained.</strong></li>' +
+        '<li>Practice CLAYGO before leaving the confirmation venue.</li>' +
+      '</ol></div>',
+    schedule:
+      '<div class="info-card"><h4><span>&#128197;</span> Confirmation Schedule (DPWAS)</h4><p class="read-note"><strong>Schedule Notice:</strong> DPWAS schedule is individualized. Please enter your Application Number in the checker to view your assigned Date and Time.</p><ul class="quick-points"><li>Venue: SLSU Gymnasium, Lucban, Quezon</li><li>Please arrive at least 30 minutes before your assigned schedule.</li></ul></div>',
+    requirements:
+      '<div class="info-card"><h4><span>&#128203;</span> General Admission Requirements</h4><div class="req-section"><p class="req-heading">Primary Documents and Forms (Priority)</p><ul class="req-list"><li>Examination Permit (duly signed by test administrator)</li><li><strong>Required:</strong> Filled out and signed Reconsideration Form and Waiver Form</li><li><strong>Waiver must be signed by the parent/guardian.</strong></li><li><strong>Photocopy of parent/guardian valid ID with signature is required for validation.</strong></li></ul></div><div class="req-section"><p class="req-heading">Academic Records (Submit whichever is applicable)</p><ul class="req-list"><li>Original &amp; Photocopy - Grade 12 Report Card</li><li>Original &amp; Photocopy - Transcript of Records (For Transferees)</li><li>Original &amp; Photocopy - ALS Certification of rating qualified for College Admission</li></ul></div><div class="req-section"><p class="req-heading">Supporting Documents</p><ul class="req-list"><li>2x2 Picture with nametag, white background (4 pcs)</li><li>Original &amp; Photocopy - Birth Certificate from PSA</li><li>Original &amp; Photocopy - Good Moral Character</li><li>Original &amp; Photocopy - Police Clearance</li></ul></div><div class="req-section"><p class="req-heading">Supplies</p><ul class="req-list"><li>Long White Folders (2 pcs)</li><li>Black Ballpen</li></ul></div><p class="req-link-card">Forms Link: <a href="https://tinyurl.com/SLSUAdmissionForms" target="_blank" rel="noopener noreferrer" class="fb-link">https://tinyurl.com/SLSUAdmissionForms</a></p></div>',
+    medical:
+      '<div class="info-card"><h4><span>&#129514;</span> Additional Medical Laboratory Examination Results</h4><p class="read-note"><strong>Note:</strong> DPWAS qualifiers are only required to submit laboratory examination results after securing a slot and once advised to do so.</p><table class="med-table"><thead><tr><th>Program</th><th>Required Tests</th></tr></thead><tbody><tr><td>Bachelor of Science in Nursing<br>Bachelor of Science in Radiologic Technology<br>Bachelor of Science in Midwifery</td><td>&bull; Chest X-Ray<br>&bull; CBC<br>&bull; Hepa B Screening (HBSAg, Anti-HBS, Anti-HBc)</td></tr><tr><td>Bachelor of Science in Hospitality Management<br>Bachelor of Industrial Technology major in Culinary Technology</td><td>&bull; Chest X-Ray<br>&bull; Hepa B Screening (HBSAg, Anti-HBS, Anti-HBc)</td></tr></tbody></table></div>',
+    faq:
+      '<div class="info-card"><h4><span>&#10067;</span> Frequently Asked Questions</h4>' +
+        COMMON_FAQ_HTML +
+        '<div class="faq-item"><p class="faq-q">Can I change or shift my course if I am in DPWAS or reconsideration?</p><p class="faq-a">No. Applicants must sign a waiver stating they waive the right to shift to any other program offered by the university.</p></div>' +
+        '<div class="faq-item"><p class="faq-q">I missed the confirmation schedule. Can I still confirm my slot beyond my schedule?</p><p class="faq-a">For DPWAS applicants, missing the confirmation schedule forfeits the slot, but you may still report during reconsideration dates for programs with available slots.</p></div>' +
+        '<div class="faq-item"><p class="faq-q">What is the process of slot confirmation?</p><p class="faq-a">Access, download, and fill out the reconsideration form and waiver form for admission with the parent signature; report on the date of confirmation set by the Student Admission Office; and submit all requirements.</p></div>' +
+      '</div>'
+  },
+  satellite: {
+    reminders:
+      '<div class="info-card"><h4><span>&#128204;</span> Important Reminders</h4><ol class="reminder-list">' +
+        '<li>College applicants must pass the interview, laboratory examination for specific programs, and other admission requirements to proceed with the confirmation process.</li>' +
+        '<li><strong>Incomplete requirements will be processed, provided that primary documents such as the original report card or academic records are presented on the day of confirmation.</strong> Qualifiers should bring all listed requirements.</li>' +
+        '<li>College applicants are <strong>required to wear a plain white shirt and maong pants</strong> during slot confirmation.</li>' +
+        '<li><strong>No reservation fees</strong> are to be collected to confirm the admission slot.</li>' +
+        '<li>Applicants who require a companion may bring only one (1) person inside the premises.</li>' +
+        '<li>Applicants for BS Hospitality Management are <strong>required to be accompanied</strong> by a parent or guardian for a short program orientation.</li>' +
+        '<li>Non-appearance on the given schedule means forfeiture of the admission slot.</li>' +
+        '<li>In case a program reaches its quota, qualified applicants may still apply for reconsideration in programs with available slots, subject to approval and availability.</li>' +
+        '<li><strong>Only qualified applicants will be entertained.</strong></li>' +
+        '<li>Practice CLAYGO before leaving the confirmation venue.</li>' +
+      '</ol></div><div class="info-card"><h4><span>&#9728;&#65039;</span> Special Necessities During Confirmation</h4><p class="read-note">In light of the current high heat index, applicants are strongly advised to bring water, a fan, towel, umbrella or cap, cooling wipes or alcohol, and light snacks.</p></div>',
+    schedule:
+      '<div class="info-card"><h4><span>&#128197;</span> Schedule of Confirmation</h4><p class="read-note"><strong>Schedule Notice:</strong> Use the checker to view your assigned satellite campus, first-choice course, and report date.</p><ul class="quick-points"><li>SLSU Tiaong Campus: May 5-6, 2026</li><li>SLSU Tayabas Campus: May 5-6, 2026</li><li>Please proceed to the satellite campus indicated in your result on your scheduled confirmation date.</li><li>Bring all required documents and arrive at least 30 minutes early.</li><li>Non-appearance means forfeiture of your slot.</li></ul></div><div class="info-card"><h4><span>&#128260;</span> Schedule of Reconsideration</h4><ul class="quick-points"><li>SLSU Tiaong Campus: May 11, 2026</li><li>SLSU Tayabas Campus: May 11, 2026</li><li>Reconsideration is subject to approval and the availability of slots.</li></ul></div>',
+    requirements:
+      '<div class="info-card"><h4><span>&#128203;</span> General Admission Requirements</h4><div class="req-section"><p class="req-heading">Primary Documents and Forms (Priority)</p><ul class="req-list"><li>Examination Permit (duly signed by test administrator)</li><li>Academic Records (submit whichever is applicable)</li></ul></div><div class="req-section"><p class="req-heading">Academic Records</p><ul class="req-list"><li>Original &amp; Photocopy - Grade 12 Report Card</li><li>Original &amp; Photocopy - Transcript of Records (For Transferees)</li><li>Original &amp; Photocopy - ALS Certification of rating qualified for College Admission</li></ul></div><div class="req-section"><p class="req-heading">Supporting Documents</p><ul class="req-list"><li>2x2 Picture with nametag, white background (4 pcs)</li><li>Original &amp; Photocopy - Birth Certificate from PSA</li><li>Original &amp; Photocopy - Good Moral Character</li><li>Original &amp; Photocopy - Police Clearance</li></ul></div><div class="req-section"><p class="req-heading">Supplies</p><ul class="req-list"><li>Long White Folders (2 pcs)</li><li>Black Ballpen</li></ul></div></div>',
+    medical:
+      '<div class="info-card"><h4><span>&#129514;</span> Additional Medical Laboratory Examination Results</h4><table class="med-table"><thead><tr><th>Program</th><th>Required Tests</th></tr></thead><tbody><tr><td>Bachelor of Science in Hospitality Management (SLSU Tayabas)<br>Bachelor of Technical-Vocational Teacher Education major in Food and Service Management (SLSU Lucena)<br>Bachelor of Science in Industrial Technology major in Food and Beverage Technology (SLSU-JGE Tagkawayan)</td><td>&bull; Chest X-Ray<br>&bull; Hepa B Screening (HBSAg, Anti-HBS, Anti-HBc)</td></tr><tr><td>Bachelor of Science in Nursing</td><td>&bull; Chest X-Ray<br>&bull; CBC<br>&bull; Hepa B Screening (HBSAg, Anti-HBS, Anti-HBc)</td></tr></tbody></table></div>',
+    faq:
+      '<div class="info-card"><h4><span>&#10067;</span> Frequently Asked Questions</h4>' +
+        COMMON_FAQ_HTML +
+        '<div class="faq-item"><p class="faq-q">What will the checker show?</p><p class="faq-a">It will show your assigned satellite campus, your first-choice course, and the date when you should report to that campus.</p></div>' +
+        '<div class="faq-item"><p class="faq-q">Can I report to a different satellite campus?</p><p class="faq-a">No. Applicants should report to the satellite campus indicated in their result unless officially instructed otherwise.</p></div>' +
+        '<div class="faq-item"><p class="faq-q">Should I screenshot my result?</p><p class="faq-a">Yes. Keep a screenshot of your result as proof of your assigned campus and schedule.</p></div>' +
+        '<div class="faq-item"><p class="faq-q">What if I am not qualified?</p><p class="faq-a">Other opportunities such as reconsideration may still be available, subject to the availability of slots.</p></div>' +
+      '</div>'
+  }
+};
+
+function getCurrentModeConfig() {
+  return CHECKER_MODES[currentCheckerMode] || CHECKER_MODES.satellite;
+}
+
 async function parseJsonResponse(response) {
   var payload = null;
   try {
@@ -40,9 +188,10 @@ async function parseJsonResponse(response) {
 
 async function loadAllData() {
   var statusEl = document.getElementById('dataStatus');
-  statusEl.innerHTML = '<div class="loading-bar"><div class="spinner"></div>Preparing secure satellite campus qualifier lookup&hellip;</div>';
+  var modeConfig = getCurrentModeConfig();
+  statusEl.innerHTML = '<div class="loading-bar"><div class="spinner"></div>' + modeConfig.loadingText + '</div>';
   try {
-    var res = await fetch(buildApiUrl('/api/search-result'), { cache: 'no-store' });
+    var res = await fetch(buildApiUrl('/api/search-result', { mode: currentCheckerMode }), { cache: 'no-store' });
     var payload = await parseJsonResponse(res);
     if (!res.ok || !payload.ready) {
       throw new Error(payload && payload.error ? payload.error : 'Secure lookup is not available.');
@@ -52,7 +201,7 @@ async function loadAllData() {
     document.getElementById('checkBtn').disabled = false;
     document.getElementById('appInput').focus();
   } catch (err) {
-    statusEl.innerHTML = '<div class="error-bar">&#9888;&#65039; Could not load secure satellite qualifier data. ' + escapeHtml(err.message) + '<br>Please refresh the page or contact the admission office.</div>';
+    statusEl.innerHTML = '<div class="error-bar">&#9888;&#65039; ' + modeConfig.loadErrorText + ' ' + escapeHtml(err.message) + '<br>Please refresh the page or contact the admission office.</div>';
   }
 }
 
@@ -140,13 +289,99 @@ function getMainCampusCollege(program) {
   return 'Main Campus';
 }
 
+function setActiveModeButton(mode) {
+  document.querySelectorAll('.checker-switcher-link').forEach(function(button) {
+    var isActive = button.getAttribute('data-checker-mode') === mode;
+    button.classList.toggle('active', isActive);
+    if (isActive) {
+      button.setAttribute('aria-current', 'page');
+    } else {
+      button.removeAttribute('aria-current');
+    }
+  });
+}
+
+function updateCheckerCopy() {
+  var modeConfig = getCurrentModeConfig();
+  var titleEl = document.getElementById('checkerTitle');
+  var subtitleEl = document.getElementById('checkerSubtitle');
+  var infoTitleEl = document.getElementById('infoTitle');
+  var infoSubtitleEl = document.getElementById('infoSubtitle');
+  var inputEl = document.getElementById('appInput');
+
+  if (titleEl) titleEl.textContent = modeConfig.title;
+  if (subtitleEl) subtitleEl.textContent = modeConfig.subtitle;
+  if (infoTitleEl) infoTitleEl.textContent = 'Information & Reminders';
+  if (infoSubtitleEl) infoSubtitleEl.textContent = modeConfig.infoSubtitle;
+  if (inputEl) inputEl.setAttribute('placeholder', modeConfig.placeholder);
+}
+
+function resetInfoTabs() {
+  document.querySelectorAll('.tab-btn').forEach(function(button, index) {
+    button.classList.toggle('active', index === 0);
+  });
+}
+
+function renderInfoPanels(mode) {
+  var content = INFO_CONTENT[mode] || INFO_CONTENT.satellite;
+  var infoPanelsEl = document.getElementById('infoPanels');
+  if (!infoPanelsEl) return;
+
+  infoPanelsEl.innerHTML =
+    '<div id="tab-reminders" class="tab-panel active">' + content.reminders + '</div>' +
+    '<div id="tab-schedule" class="tab-panel">' + content.schedule + '</div>' +
+    '<div id="tab-requirements" class="tab-panel">' + content.requirements + '</div>' +
+    '<div id="tab-medical" class="tab-panel">' + content.medical + '</div>' +
+    '<div id="tab-faq" class="tab-panel">' + content.faq + '</div>';
+  resetInfoTabs();
+}
+
+function switchCheckerMode(mode) {
+  if (!CHECKER_MODES[mode] || mode === currentCheckerMode) return;
+
+  currentCheckerMode = mode;
+  setActiveModeButton(mode);
+  updateCheckerCopy();
+  renderInfoPanels(mode);
+
+  var inputEl = document.getElementById('appInput');
+  var resultEl = document.getElementById('result');
+  if (inputEl) inputEl.value = '';
+  if (resultEl) resultEl.innerHTML = '';
+}
+
+function renderNotFoundResult(mode) {
+  var modeLabel = mode === 'main'
+    ? 'Main Campus first-choice qualifier'
+    : mode === 'dpwas'
+      ? 'Main Campus DPWAS eligible'
+      : 'Satellite Campus qualifier';
+  var advisory = mode === 'main'
+    ? 'Your Application Number is not found in the Main Campus first-choice qualifier data currently uploaded to this checker.'
+    : mode === 'dpwas'
+      ? 'Your Application Number is not found in the Main Campus DPWAS eligible data currently uploaded to this checker.'
+      : 'Your Application Number is not found in the Satellite Campus qualifier data currently uploaded to this checker.';
+
+  return '<div class="result-box result-warning">' +
+    '<div class="res-header">' +
+      '<div class="res-icon icon-warning">&#8505;</div>' +
+      '<div class="res-header-text">' +
+        '<div class="res-tag res-tag-warning">NO ' + escapeHtml(modeLabel).toUpperCase() + ' RECORD FOUND</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="res-divider-warning"></div>' +
+    '<p class="advisory-text">Thank you for checking. ' + advisory + '<br><br>Please wait for further announcements from the <a href="https://www.facebook.com/slsuMain" target="_blank" rel="noopener noreferrer" class="fb-link">SLSU Main Campus</a> and the <a href="https://www.facebook.com/SLSUAdmission" target="_blank" rel="noopener noreferrer" class="fb-link">SLSU Student Admission Office</a>.</p>' +
+  '</div>';
+}
+
 async function checkResult() {
   var raw = document.getElementById('appInput').value.trim();
   var resultEl = document.getElementById('result');
   var buttonEl = document.getElementById('checkBtn');
+  var modeConfig = getCurrentModeConfig();
 
   if (!raw) {
-    resultEl.innerHTML = '<div class="result-box result-fail"><p style="font-size:14px;color:#8b4513;">&#9888;&#65039; Please enter your Application Number before checking.</p></div>';
+    resultEl.innerHTML = '<div class="result-box result-fail"><p style="font-size:14px;color:#8b4513;">&#9888;&#65039; ' + escapeHtml(modeConfig.emptyText) + '</p></div>';
     return;
   }
 
@@ -157,7 +392,7 @@ async function checkResult() {
   buttonEl.textContent = 'Checking...';
 
   try {
-    var response = await fetch(buildApiUrl('/api/search-result', { q: lookupKey }), {
+    var response = await fetch(buildApiUrl('/api/search-result', { q: lookupKey, mode: currentCheckerMode }), {
       cache: 'no-store'
     });
     var payload = await parseJsonResponse(response);
@@ -167,7 +402,7 @@ async function checkResult() {
     }
 
     if (payload.found) {
-      if (payload.type === 'satellite_qualifier') {
+      if (payload.type === 'satellite_qualifier' && currentCheckerMode === 'satellite') {
         var displaySatellite = String(payload.satellite || '').trim() || 'To be announced';
         var displayCourse = String(payload.course || '').trim() || 'To be announced';
         var displayDate = formatDateString(payload.date) || 'To be announced';
@@ -190,7 +425,7 @@ async function checkResult() {
             '</div>' +
             '<p class="screenshot-note">Screenshot this as proof of your assigned campus and schedule.</p>' +
           '</div>';
-      } else if (payload.type === 'main_dpwas') {
+      } else if (payload.type === 'main_dpwas' && currentCheckerMode === 'dpwas') {
         var dpwasDate = formatDateString(payload.date) || 'To be announced';
         var dpwasTime = formatTimeRange(payload.time) || 'To be announced';
         resultEl.innerHTML =
@@ -207,7 +442,7 @@ async function checkResult() {
             '<div class="res-row"><div class="res-label res-label-info">Time</div><div class="res-val program program-info">' + escapeHtml(dpwasTime) + '</div></div>' +
             '<div class="congrats-note congrats-note-info">This Application Number is included in the SLSU Main Campus DPWAS list. Please report on <strong>' + escapeHtml(dpwasDate) + '</strong> at <strong>' + escapeHtml(dpwasTime) + '</strong> and follow the Main Campus DPWAS instructions.</div>' +
           '</div>';
-      } else if (payload.type === 'main_first_choice') {
+      } else if (payload.type === 'main_first_choice' && currentCheckerMode === 'main') {
         var displayProgram = String(payload.program || '').trim() || 'To be announced';
         var displayCollege = getMainCampusCollege(displayProgram);
         resultEl.innerHTML =
@@ -224,19 +459,11 @@ async function checkResult() {
             '<div class="res-row"><div class="res-label res-label-info">Course</div><div class="res-val program program-info">' + escapeHtml(displayProgram) + '</div></div>' +
             '<div class="congrats-note congrats-note-info">This Application Number is included in the SLSU Main Campus first-choice qualifier list under <strong>' + escapeHtml(displayCollege) + '</strong> for <strong>' + escapeHtml(displayProgram) + '</strong>.</div>' +
           '</div>';
+      } else {
+        resultEl.innerHTML = renderNotFoundResult(currentCheckerMode);
       }
     } else {
-      resultEl.innerHTML =
-        '<div class="result-box result-warning">' +
-          '<div class="res-header">' +
-            '<div class="res-icon icon-warning">&#8505;</div>' +
-            '<div class="res-header-text">' +
-              '<div class="res-tag res-tag-warning">NO CURRENT RECORD FOUND</div>' +
-            '</div>' +
-          '</div>' +
-          '<div class="res-divider-warning"></div>' +
-          '<p class="advisory-text">Thank you for checking. Your Application Number is not found in the qualifier data currently uploaded to this checker.<br><br>This does not automatically mean that you are not qualified. Some SLSU Satellite Campuses may release their qualifier lists on different dates, and this checker will only show records from campuses whose data has already been provided and uploaded.<br><br>Please wait for further announcements from your target satellite campus, the <a href="https://www.facebook.com/slsuMain" target="_blank" rel="noopener noreferrer" class="fb-link">SLSU Main Campus</a>, and the <a href="https://www.facebook.com/SLSUAdmission" target="_blank" rel="noopener noreferrer" class="fb-link">SLSU Student Admission Office</a>.</p>' +
-        '</div>';
+      resultEl.innerHTML = renderNotFoundResult(currentCheckerMode);
     }
   } catch (err) {
     resultEl.innerHTML = '<div class="result-box result-fail"><p style="font-size:14px;color:#8b4513;">&#9888;&#65039; ' + escapeHtml(err.message) + '</p></div>';
@@ -255,6 +482,9 @@ function switchTab(btn, tab) {
   btn.classList.add('active');
 }
 
+updateCheckerCopy();
+setActiveModeButton(currentCheckerMode);
+renderInfoPanels(currentCheckerMode);
 loadAllData();
 
 
