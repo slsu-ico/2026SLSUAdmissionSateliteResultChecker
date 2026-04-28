@@ -74,13 +74,31 @@ var INFO_CONTENT = {
     reminders:
       '<div class="info-card"><h4><span>&#128204;</span> Important Reminders</h4><ol class="reminder-list">' +
         '<li>College applicants must pass the interview, laboratory examination for specific programs, and other admission requirements to proceed with the confirmation process.</li>' +
-        '<li><strong>Incomplete requirements will be processed provided that primary documents such as original report card or academic records are presented on the day of confirmation.</strong> Qualifiers should bring all listed requirements.</li>' +
+        '<li><strong>Incomplete requirements will be processed provided that primary documents such as original report card or academic records are presented on the day of confirmation.</strong> Qualifiers should bring the following requirements:' +
+          '<ol class="sub-reminder-list">' +
+            '<li>Examination Permit (duly signed by the test administrator)</li>' +
+            '<li>Long White Folders (2 pcs)</li>' +
+            '<li>Black Ballpen</li>' +
+            '<li>2x2 Picture with nametag and White background (4 pcs)</li>' +
+            '<li>Original and Photocopy of Birth Certificate from PSA</li>' +
+            '<li>Original and Photocopy of Good Moral Character</li>' +
+            '<li>Original and Photocopy of Police Clearance</li>' +
+            '<li>Original and Photocopy of Academic Records' +
+              '<ol class="sub-sub-reminder-list">' +
+                '<li>Grade 12 Report Card</li>' +
+                '<li>Transcript of Records (For Transferees)</li>' +
+                '<li>ALS Certification of rating qualified for College Admission</li>' +
+              '</ol>' +
+            '</li>' +
+          '</ol>' +
+        '</li>' +
         '<li>College applicants are <strong>required to wear a plain white shirt and maong pants</strong> during slot confirmation.</li>' +
         '<li>The Student Admission Staff will distribute queuing numbers starting at 7:00 AM at SLSU Gate 1.</li>' +
         '<li><strong>No reservation fees</strong> are to be collected to confirm the admission slot.</li>' +
         '<li>Applicants who require a companion may bring only one (1) person inside the premises.</li>' +
         '<li>Applicants for BS Nursing, BS Radiologic Technology, BS Midwifery, BS Accountancy, BS Hospitality Management, BA Psychology, and College of Agriculture are <strong>required to be accompanied</strong> by a parent or guardian for a short program orientation.</li>' +
         '<li>Non-appearance on the given schedule means forfeiture of the admission slot. Qualifiers with valid reasons may report to the confirmation venue on <strong>April 27 and 28, 2026 only</strong>.</li>' +
+        '<li>In case a program reaches its quota, qualified applicants may still apply for reconsideration in programs with available slots. However, reconsideration is still subject to approval and the availability of slots.</li>' +
         '<li><strong>Only qualified applicants will be entertained.</strong></li>' +
         '<li>Practice CLAYGO before leaving the confirmation venue.</li>' +
       '</ol></div>',
@@ -114,19 +132,43 @@ var INFO_CONTENT = {
       '<div class="info-card"><h4><span>&#10067;</span> Frequently Asked Questions</h4>' +
         COMMON_FAQ_HTML +
         '<div class="faq-item"><p class="faq-q">What if my examinee number is not on the qualifiers or DPWAS lists?</p><p class="faq-a">You may apply for reconsideration, subject to approval and slot availability. Follow official announcements and visit the Admission Office on the scheduled date.</p></div>' +
+        '<div class="faq-item"><p class="faq-q">Can I change or shift my course if I am in DPWAS or reconsideration?</p><p class="faq-a">No. Applicants must sign a waiver stating they waive the right to shift to any other program offered by the university.</p></div>' +
+        '<div class="faq-item"><p class="faq-q">I missed the confirmation schedule. Can I still confirm my slot beyond my schedule?</p><p class="faq-a">Qualifiers who are unable to attend their scheduled date for valid reasons, such as transportation difficulties, medical concerns, or other justifiable circumstances, may report to the confirmation venue on <strong>April 27 and 28, 2026 only</strong>. For DPWAS applicants, missing the confirmation schedule forfeits the slot, but they may still report during reconsideration dates for programs with available slots.</p></div>' +
+        '<div class="faq-item"><p class="faq-q">How will I be notified of the confirmation schedule?</p><p class="faq-a">Confirmation schedules will be posted on the Facebook page of Southern Luzon State University Main Campus and on the SLSU website.</p></div>' +
+        '<div class="faq-item"><p class="faq-q">Can I confirm and enroll in an SLSU Satellite Campus if I took my entrance exam at the Main Campus?</p><p class="faq-a">Yes. You may apply for reconsideration during the Satellite Campus reconsideration dates.</p></div>' +
         '<div class="faq-item"><p class="faq-q">Can I confirm and enroll in SLSU Main Campus if I took an entrance exam at an SLSU Satellite Campus?</p><p class="faq-a">No. Applications for SLSU Satellite Campuses are only valid for those respective campuses.</p></div>' +
         '<div class="faq-item"><p class="faq-q">Can I still confirm my slot if some confirmation requirements are incomplete?</p><p class="faq-a">Yes, but your original report card or academic record must be presented on the day of confirmation.</p></div>' +
+        '<div class="faq-item"><p class="faq-q">What is the process of slot confirmation in the program I applied to?</p><p class="faq-a"><strong>If Qualifier:</strong> Report on the date of confirmation scheduled per program and submit all requirements for confirmation of slots.<br><strong>If listed on DPWAS:</strong> Access, download, and fill out the reconsideration form and waiver form for admission with the signature of the parent; report on the date of confirmation set by the Student Admission Office; and submit all requirements for confirmation of slots.</p></div>' +
       '</div>'
   },
   dpwas: {
     reminders:
       '<div class="info-card"><h4><span>&#128204;</span> Important Reminders</h4><ol class="reminder-list">' +
         '<li>College applicants must pass the interview, laboratory examination for specific programs, and other admission requirements to proceed with the confirmation process.</li>' +
-        '<li><strong>Incomplete requirements will be processed, provided that primary documents such as academic records and filled out Admission Forms are presented on the day of confirmation.</strong></li>' +
-        '<li>DPWAS applicants must bring filled out and signed Reconsideration and Waiver Forms. The waiver must be signed by the parent or guardian.</li>' +
-        '<li>A photocopy of the parent or guardian valid ID with signature is required for validation.</li>' +
+        '<li><strong>Incomplete requirements will be processed, provided that primary documents such as academic records and filled out Admission Forms are presented on the day of confirmation.</strong> Qualifiers should bring the following requirements:' +
+          '<ol class="sub-reminder-list">' +
+            '<li>Examination Permit (duly signed by the test administrator)</li>' +
+            '<li>Long White Folders (2 pcs)</li>' +
+            '<li>Black Ballpen</li>' +
+            '<li>2x2 Picture with nametag and White background (4 pcs)</li>' +
+            '<li>Original and Photocopy of Birth Certificate from PSA</li>' +
+            '<li>Original and Photocopy of Good Moral Character</li>' +
+            '<li>Original and Photocopy of Police Clearance</li>' +
+            '<li>Original and Photocopy of Academic Records' +
+              '<ol class="sub-sub-reminder-list">' +
+                '<li>Grade 12 Report Card</li>' +
+                '<li>Transcript of Records (For Transferees)</li>' +
+                '<li>ALS Certification of rating qualified for College Admission</li>' +
+              '</ol>' +
+            '</li>' +
+            '<li><strong>Filled out and signed Reconsideration and Waiver Forms (waiver must be signed by the parent/guardian),</strong> accessible here: <a href="https://tinyurl.com/SLSUAdmissionForms" target="_blank" rel="noopener noreferrer" class="fb-link">https://tinyurl.com/SLSUAdmissionForms</a><br><strong>A photocopy of the parent/guardian valid ID with signature is required for validation.</strong></li>' +
+          '</ol>' +
+        '</li>' +
         '<li>College applicants are <strong>required to wear a plain white shirt and maong pants</strong> during slot confirmation.</li>' +
         '<li><strong>No reservation fees</strong> are to be collected to confirm the admission slot.</li>' +
+        '<li>Applicants who require a companion may bring only one (1) person inside the premises.</li>' +
+        '<li>Non-appearance on the given schedule means forfeiture of the admission slot.</li>' +
+        '<li>In case a program reaches its quota, qualified applicants may still apply for reconsideration in programs with available slots. However, reconsideration is still subject to approval and the availability of slots.</li>' +
         '<li><strong>Only those who are scheduled will be entertained.</strong></li>' +
         '<li>Practice CLAYGO before leaving the confirmation venue.</li>' +
       '</ol></div>',
@@ -139,9 +181,14 @@ var INFO_CONTENT = {
     faq:
       '<div class="info-card"><h4><span>&#10067;</span> Frequently Asked Questions</h4>' +
         COMMON_FAQ_HTML +
+        '<div class="faq-item"><p class="faq-q">What if my examinee number is not on the qualifiers or DPWAS lists?</p><p class="faq-a">You may apply for reconsideration, subject to approval and slot availability. Follow the instructions on the official Facebook page and visit the Admission Office on the scheduled date.</p></div>' +
         '<div class="faq-item"><p class="faq-q">Can I change or shift my course if I am in DPWAS or reconsideration?</p><p class="faq-a">No. Applicants must sign a waiver stating they waive the right to shift to any other program offered by the university.</p></div>' +
         '<div class="faq-item"><p class="faq-q">I missed the confirmation schedule. Can I still confirm my slot beyond my schedule?</p><p class="faq-a">For DPWAS applicants, missing the confirmation schedule forfeits the slot, but you may still report during reconsideration dates for programs with available slots.</p></div>' +
-        '<div class="faq-item"><p class="faq-q">What is the process of slot confirmation?</p><p class="faq-a">Access, download, and fill out the reconsideration form and waiver form for admission with the parent signature; report on the date of confirmation set by the Student Admission Office; and submit all requirements.</p></div>' +
+        '<div class="faq-item"><p class="faq-q">How will I be notified of the confirmation schedule?</p><p class="faq-a">Confirmation schedules will be posted on the Facebook page of Southern Luzon State University Main Campus and on the SLSU website.</p></div>' +
+        '<div class="faq-item"><p class="faq-q">Can I confirm and enroll in an SLSU Satellite Campus if I took my entrance exam at the Main Campus?</p><p class="faq-a">Yes. You may apply for reconsideration during the Satellite Campus reconsideration dates.</p></div>' +
+        '<div class="faq-item"><p class="faq-q">Can I still confirm my slot if some confirmation requirements are incomplete?</p><p class="faq-a">Yes, but your original report card or academic record must be presented on the day of confirmation.</p></div>' +
+        '<div class="faq-item"><p class="faq-q">What should I do if I do not have a copy of my Examination Permit?</p><p class="faq-a">Submit a request letter for a second copy of your Examination Permit addressed to the Head of the Student Admission Office. The second copy will be released on the same day as your scheduled confirmation.</p></div>' +
+        '<div class="faq-item"><p class="faq-q">What is the process of slot confirmation?</p><p class="faq-a">Access, download, and fill out the reconsideration form and waiver form for admission with the signature of the parent; report on the date of confirmation set by the Student Admission Office; and submit all requirements for confirmation of slots.</p></div>' +
       '</div>'
   },
   satellite: {
@@ -398,6 +445,7 @@ function renderNotFoundResult(mode) {
 
 function renderMainQualifierResult(displayKey, payload) {
   var displayProgram = String(payload.program || '').trim() || 'To be announced';
+  var displayCollege = getMainCampusCollege(displayProgram);
   return '<div class="result-box result-success">' +
     '<div class="res-header">' +
       '<div class="res-icon icon-success">&#127881;</div>' +
@@ -408,6 +456,7 @@ function renderMainQualifierResult(displayKey, payload) {
     '</div>' +
     '<div class="res-divider"></div>' +
     '<div class="res-row"><div class="res-label">App. No.</div><div class="res-val">' + escapeHtml(displayKey) + '</div></div>' +
+    '<div class="res-row"><div class="res-label">College</div><div class="res-val program">' + escapeHtml(displayCollege) + '</div></div>' +
     '<div class="res-row"><div class="res-label">1st Choice Program</div><div class="res-val program">' + escapeHtml(displayProgram) + '</div></div>' +
     '<div class="congrats-note">' +
       'You have qualified for your first choice program. Please proceed to the <strong>SLSU Student Admission Office</strong> on your scheduled confirmation date. Bring all required documents and arrive at least <strong>30 minutes early</strong>. Non-appearance means <strong>forfeiture of your slot</strong>.' +
