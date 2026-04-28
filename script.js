@@ -194,13 +194,30 @@ var INFO_CONTENT = {
   satellite: {
     reminders:
       '<div class="info-card"><h4><span>&#128204;</span> Important Reminders</h4><ol class="reminder-list">' +
-        '<li>College applicants must pass the interview, laboratory examination for specific programs, and other admission requirements to proceed with the confirmation process.</li>' +
-        '<li><strong>Incomplete requirements will be processed, provided that primary documents such as the original report card or academic records are presented on the day of confirmation.</strong> Qualifiers should bring all listed requirements.</li>' +
+        '<li>College applicants must pass the interview, laboratory examination (for specific programs), and other admission requirements to proceed with the confirmation process.</li>' +
+        '<li><strong>Incomplete requirements will be processed, provided that primary documents such as original report card or academic records are presented on the day of confirmation.</strong> Qualifiers should bring the following requirements:' +
+          '<ol class="sub-reminder-list">' +
+            '<li>Examination Permit (duly signed by the test administrator)</li>' +
+            '<li>Long White Folders (2 pcs)</li>' +
+            '<li>Black Ballpen</li>' +
+            '<li>2x2 Picture with nametag and White background (4 pcs)</li>' +
+            '<li>Original and Photocopy of Birth Certificate from PSA</li>' +
+            '<li>Original and Photocopy of Good Moral Character</li>' +
+            '<li>Original and Photocopy of Police Clearance</li>' +
+            '<li>Original and Photocopy of Academic Records' +
+              '<ol class="sub-sub-reminder-list">' +
+                '<li>Grade 12 Report Card</li>' +
+                '<li>Transcript of Records (For Transferees)</li>' +
+                '<li>ALS Certification of rating qualified for College Admission</li>' +
+              '</ol>' +
+            '</li>' +
+          '</ol>' +
+        '</li>' +
         '<li>College applicants are <strong>required to wear a plain white shirt and maong pants</strong> during slot confirmation.</li>' +
         '<li><strong>No reservation fees</strong> are to be collected to confirm the admission slot.</li>' +
         '<li>Applicants who require a companion may bring only one (1) person inside the premises.</li>' +
         '<li>Applicants for BS Hospitality Management are <strong>required to be accompanied</strong> by a parent or guardian for a short program orientation.</li>' +
-        '<li>Non-appearance on the given schedule means forfeiture of the admission slot.</li>' +
+        '<li>Non-appearance on the given schedule means forfeiture of the admission slot. Qualifiers who are unable to attend their scheduled date with valid reasons, such as transportation difficulties, medical concerns, or other justifiable circumstances.</li>' +
         '<li>In case a program reaches its quota, qualified applicants may still apply for reconsideration in programs with available slots, subject to approval and availability.</li>' +
         '<li><strong>Only qualified applicants will be entertained.</strong></li>' +
         '<li>Practice CLAYGO before leaving the confirmation venue.</li>' +
@@ -588,5 +605,4 @@ updateCheckerCopy();
 setActiveModeButton(currentCheckerMode);
 renderInfoPanels(currentCheckerMode);
 loadAllData();
-
 
