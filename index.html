@@ -42,9 +42,15 @@
 </div>
 
 <main>
+  <nav class="checker-switcher" aria-label="Admission result checker categories">
+    <button class="checker-switcher-link" type="button" data-checker-mode="main" onclick="switchCheckerMode('main')">Main Campus Qualifier</button>
+    <button class="checker-switcher-link" type="button" data-checker-mode="dpwas" onclick="switchCheckerMode('dpwas')">DPWAS Eligible</button>
+    <button class="checker-switcher-link active" type="button" data-checker-mode="satellite" onclick="switchCheckerMode('satellite')" aria-current="page">Satellite Campus</button>
+  </nav>
+
   <div class="checker-card">
-    <h2>Check Your Satellite Campus Qualification</h2>
-    <p class="subtitle">Enter your Application Number as indicated on your Examination Permit to view your assigned satellite campus, first-choice course, and reporting schedule.</p>
+    <h2 id="checkerTitle">Check Your Satellite Campus Qualification</h2>
+    <p class="subtitle" id="checkerSubtitle">Enter your Application Number as indicated on your Examination Permit to view your assigned satellite campus, first-choice course, and reporting schedule.</p>
 
     <div id="dataStatus"></div>
 
